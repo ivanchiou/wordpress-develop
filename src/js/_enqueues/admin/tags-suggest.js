@@ -38,11 +38,6 @@
 		var last;
 		var $element = $( this );
 
-		// Do not initialize if the element doesn't exist.
-		if ( ! $element.length ) {
-			return;
-		}
-
 		options = options || {};
 
 		var taxonomy = options.taxonomy || $element.attr( 'data-wp-taxonomy' ) || 'post_tag';
@@ -151,18 +146,13 @@
 
 		$element.on( 'keydown', function() {
 			$element.removeAttr( 'aria-activedescendant' );
-		} );
-
-		$element.autocomplete( options );
-
-		// Ensure the autocomplete instance exists.
-		if ( $element.autocomplete( 'instance' ) ) {
-			$element.autocomplete( 'instance' )._renderItem = function( ul, item ) {
-				return $( '<li role="option" id="wp-tags-autocomplete-' + item.id + '">' )
-					.text( item.name )
-					.appendTo( ul );
-			};
-		}
+		} )
+		.autocomplete( options )
+		.autocomplete( 'instance' )._renderItem = function( ul, item ) {
+			return $( '<li role="option" id="wp-tags-autocomplete-' + item.id + '">' )
+				.text( item.name )
+				.appendTo( ul );
+		};
 
 		$element.attr( {
 			'role': 'combobox',

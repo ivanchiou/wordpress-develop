@@ -20,9 +20,9 @@ class Tests_Image_Functions extends WP_UnitTestCase {
 		require_once DIR_TESTDATA . '/../includes/mock-image-editor.php';
 
 		// Ensure no legacy / failed tests detritus.
-		$folder = get_temp_dir() . 'wordpress-gsoc-flyer*.*';
+		$folder = get_temp_dir() . 'wordpress-gsoc-flyer*.{jpg,pdf}';
 
-		foreach ( glob( $folder ) as $file ) {
+		foreach ( glob( $folder, GLOB_BRACE ) as $file ) {
 			unlink( $file );
 		}
 	}

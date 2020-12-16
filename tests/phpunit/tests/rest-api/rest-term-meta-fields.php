@@ -14,7 +14,7 @@ class WP_Test_REST_Term_Meta_Fields extends WP_Test_REST_TestCase {
 	protected static $category_id;
 	protected static $customtax_term_id;
 
-	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
+	public static function wpSetUpBeforeClass( $factory ) {
 		register_taxonomy(
 			'customtax',
 			'post',

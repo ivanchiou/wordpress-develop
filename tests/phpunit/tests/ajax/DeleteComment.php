@@ -29,7 +29,7 @@ class Tests_Ajax_DeleteComment extends WP_Ajax_UnitTestCase {
 	 */
 	protected static $post_id;
 
-	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
+	public static function wpSetUpBeforeClass( $factory ) {
 		self::$post_id = $factory->post->create();
 
 		$comment_ids    = $factory->comment->create_post_comments( self::$post_id, 8 );

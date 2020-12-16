@@ -344,7 +344,7 @@ function is_taxonomy_hierarchical( $taxonomy ) {
  * @param array|string $args        {
  *     Optional. Array or query string of arguments for registering a taxonomy.
  *
- *     @type string[]      $labels                An array of labels for this taxonomy. By default, Tag labels are
+ *     @type array         $labels                An array of labels for this taxonomy. By default, Tag labels are
  *                                                used for non-hierarchical taxonomies, and Category labels are used
  *                                                for hierarchical taxonomies. See accepted values in
  *                                                get_taxonomy_labels(). Default empty array.
@@ -382,7 +382,7 @@ function is_taxonomy_hierarchical( $taxonomy ) {
  *     @type callable      $meta_box_sanitize_cb  Callback function for sanitizing taxonomy data saved from a meta
  *                                                box. If no callback is defined, an appropriate one is determined
  *                                                based on the value of `$meta_box_cb`.
- *     @type string[]      $capabilities {
+ *     @type array         $capabilities {
  *         Array of capabilities for this taxonomy.
  *
  *         @type string $manage_terms Default 'manage_categories'.
@@ -4566,10 +4566,9 @@ function get_post_taxonomies( $post = 0 ) {
  *
  * @since 2.7.0
  *
- * @param int                       $object_id ID of the object (post ID, link ID, ...).
- * @param string                    $taxonomy  Single taxonomy name.
- * @param int|string|int[]|string[] $terms     Optional. Term ID, name, slug, or array of such
- *                                             to check against. Default null.
+ * @param int              $object_id ID of the object (post ID, link ID, ...).
+ * @param string           $taxonomy  Single taxonomy name.
+ * @param int|string|array $terms     Optional. Term term_id, name, slug or array of said. Default null.
  * @return bool|WP_Error WP_Error on input error.
  */
 function is_object_in_term( $object_id, $taxonomy, $terms = null ) {

@@ -7,7 +7,7 @@ services:
   ##
   wordpress-develop:
     image: nginx:alpine
-
+    restart: always
     networks:
       - wpdevnet
 
@@ -32,7 +32,7 @@ services:
   ##
   php:
     image: wordpressdevelop/php:${LOCAL_PHP-latest}
-
+    restart: always
     networks:
       - wpdevnet
 
@@ -54,15 +54,18 @@ services:
   ##
   mysql:
     image: mysql:${LOCAL_MYSQL-latest}
-
+    restart: always
     networks:
       - wpdevnet
 
     ports:
-      - "3306"
+      - "3306:3306"
 
     environment:
       MYSQL_ROOT_PASSWORD: password
+      MYSQL_USER: root
+      MYSQL_PASSWORD: password
+      MYSQL_DATABASE: mysql      
 
     volumes:
       - ./tools/local-env/mysql-init.sql:/docker-entrypoint-initdb.d/mysql-init.sql
@@ -123,6 +126,21 @@ services:
 
     depends_on:
       - mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    links:
+      - mysql:mysql
+    ports:
+      - 8181:80
+    environment:
+      MYSQL_PORT_3306_TCP_ADDR: localhost
+      PMA_HOST: mysql
+      PMA_USERNAME: root
+      PMA_PASSWORD: password
+    networks:
+      - wpdevnet      
 
 volumes:
   # So that sites aren't wiped every time containers are restarted, MySQL uses a persistent volume.

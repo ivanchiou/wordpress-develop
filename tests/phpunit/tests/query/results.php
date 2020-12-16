@@ -21,7 +21,7 @@ class Tests_Query_Results extends WP_UnitTestCase {
 	public static $child_three;
 	public static $child_four;
 
-	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
+	public static function wpSetUpBeforeClass( $factory ) {
 		$cat_a           = $factory->term->create(
 			array(
 				'taxonomy' => 'category',

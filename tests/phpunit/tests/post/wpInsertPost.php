@@ -10,7 +10,7 @@ class Tests_Post_wpInsertPost extends WP_UnitTestCase {
 		'contributor'   => null,
 	);
 
-	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
+	static function wpSetUpBeforeClass( $factory ) {
 		self::$user_ids = array(
 			'administrator' => $factory->user->create(
 				array(
