@@ -77,7 +77,7 @@ namespace WPDataAccess\Simple_Form {
 			parent::show_item();
 			?>
 			<script type='text/javascript'>
-				jQuery(document).ready(function () {
+				jQuery(function () {
 					jQuery.datetimepicker.setLocale('<?php echo substr( get_locale(), 0, 2 ); ?>');
 					jQuery('#<?php echo esc_attr( $this->item_name ); ?>').datetimepicker({
 						format: '<?php echo $this->date_format; ?>',

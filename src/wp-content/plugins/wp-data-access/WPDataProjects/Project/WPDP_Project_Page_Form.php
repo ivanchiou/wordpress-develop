@@ -125,7 +125,7 @@ namespace WPDataProjects\Project {
 			if ( false !== $column_index ) {
 				$pub_schema_name = $this->form_items[ $column_index ]->get_item_value();
 				if ( '' === $pub_schema_name ) {
-					$pub_schema_name = $wpdb->dbname;
+					$pub_schema_name = WPDA::get_user_default_scheme();
 				}
 				if ( isset( $this->database_tables[ $pub_schema_name ] ) ) {
 					$tables = $this->database_tables[ $pub_schema_name ];
@@ -151,7 +151,7 @@ namespace WPDataProjects\Project {
 						'     jQuery(\'[name="page_content"]\').parent().parent().hide(); ' .
 						'  } ' .
 						'} ' .
-						'jQuery(document).ready(function () { ' .
+						'jQuery(function () { ' .
 						'  jQuery(\'[name="page_type"]\').change(function() { ' .
 						'    set_item_visibility(jQuery(this).val()); ' .
 						'  }); ' .
@@ -185,7 +185,7 @@ namespace WPDataProjects\Project {
 				} elseif ( 'page_schema_name' === $item->get_item_name() ) {
 					// Prepare listbox for column pub_schema_name
 					if ( '' === $item->get_item_value() ) {
-						$item->set_item_value( $wpdb->dbname );
+						$item->set_item_value( WPDA::get_user_default_scheme() );
 					}
 					$item->set_enum( $databases );
 					$this->form_items[ $i ] = new WPDA_Simple_Form_Item_Enum( $item );
@@ -258,7 +258,7 @@ namespace WPDataProjects\Project {
 				}
 				?>
 
-				jQuery(document).ready(function () {
+				jQuery(function () {
 					jQuery('[name="page_schema_name"]').on('change', function () {
 						jQuery('[name="page_table_name"]').empty();
 						var tables = database_tables[jQuery(this).val()];

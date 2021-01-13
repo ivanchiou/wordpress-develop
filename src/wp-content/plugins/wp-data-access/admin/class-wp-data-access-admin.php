@@ -217,7 +217,7 @@ class WP_Data_Access_Admin
             // Load UI darkness theme
             wp_enqueue_style(
                 'wpda_ui_darkness',
-                plugins_url( '../assets/css/jquery-ui-darkness.css', __FILE__ ),
+                plugins_url( '../assets/css/jquery-ui.min.css', __FILE__ ),
                 [],
                 WPDA::get_option( WPDA::OPTION_WPDA_VERSION )
             );
@@ -397,9 +397,6 @@ class WP_Data_Access_Admin
                 $args = [
                     'page_hook_suffix' => $this->wpda_data_explorer_menu,
                 ];
-                if ( isset( $_REQUEST['page_action'] ) && 'wpda_import_csv' === $_REQUEST['page_action'] || isset( $_REQUEST['table_name'] ) && 'wp_wpda_csv_uploads' === $_REQUEST['table_name'] ) {
-                    $args['table_name'] = WPDA_CSV_Uploads_Model::get_base_table_name();
-                }
                 $this->wpda_data_explorer_view = new WPDA_List_View( $args );
             }
             

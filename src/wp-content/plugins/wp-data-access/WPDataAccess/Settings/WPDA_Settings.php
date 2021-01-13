@@ -29,14 +29,6 @@ namespace WPDataAccess\Settings {
 	/**
 	 * Class WPDA_Settings
 	 *
-	 * The following plugin settings are supported through this class, each having its own tab:
-	 * + Back-end Settings
-	 * + Front-end Settings
-	 * + Data Publisher Settings
-	 * + Data Backup Settings
-	 * + Uninstall Settings
-	 * + Manage Repository
-	 *
 	 * All tabs have the following similar structure:
 	 * + If form was posted save options (show success or error message)
 	 * + Read options
@@ -141,6 +133,15 @@ namespace WPDataAccess\Settings {
 		];
 
 		/**
+		 * Available UI themes
+		 */
+		const UI_THEMES = [
+			'ui-darkness', 'ui-lightness', 'swanky-purse', 'sunny', 'start', 'smoothness', 'black-tie', 'blitzer',
+			'cupertino', 'dark-hive', 'dot-luv', 'eggplant', 'excite-bike', 'flick', 'hot-sneaks', 'humanity',
+			'le-frog', 'mint-choc', 'overcast', 'pepper-grinder', 'redmond', 'south-street', 'trontastic', 'vader'
+		];
+
+		/**
 		 * Menu slug of the current page
 		 *
 		 * @var string
@@ -194,6 +195,7 @@ namespace WPDataAccess\Settings {
 				'plugin'        => __( 'Plugin', 'wp-data-access' ),
 				'backend'       => __( 'Back-end', 'wp-data-access' ),
 				'frontend'      => __( 'Front-end', 'wp-data-access' ),
+				'datatables'    => __( 'DataTables', 'wp-data-access' ),
 				'datapublisher' => __( 'Data Publisher', 'wp-data-access' ),
 				'databackup'    => __( 'Data Backup', 'wp-data-access' ),
 				'uninstall'     => __( 'Uninstall', 'wp-data-access' ),
@@ -201,6 +203,16 @@ namespace WPDataAccess\Settings {
 				'roles'         => __( 'Manage Roles', 'wp-data-access' ),
 				'system'        => __( 'System Info', 'wp-data-access' ),
 			];
+
+			if ( wpda_fremius()->is_premium() ) {
+				// Add Data Forms tab
+				$add_tab['dataforms'] = __( 'Data Forms', 'wp-data-access' );
+
+				$tabs = array_slice($this->tabs, 0, 5, true) +
+						['dataforms' => __( 'Data Forms', 'wp-data-access' ) ] +
+						array_slice($this->tabs, 5, count( $this->tabs ) - 1, true) ;
+				$this->tabs = $tabs;
+			}
 
 			// Set default tab.
 			$this->current_tab = 'plugin';
@@ -327,8 +339,16 @@ namespace WPDataAccess\Settings {
 					$this->add_content_frontend();
 					break;
 
+				case 'datatables':
+					$this->add_content_datatables();
+					break;
+
 				case 'datapublisher':
 					$this->add_content_datapublisher();
+					break;
+
+				case 'dataforms':
+					$this->add_content_dataforms();
 					break;
 
 				case 'databackup':
@@ -541,6 +561,16 @@ namespace WPDataAccess\Settings {
 							isset( $_REQUEST['wpdadiehard_page'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['wpdadiehard_page'] ) ) : 'off' // input var okay.
 						);
 
+						WPDA::set_option(
+							WPDA::OPTION_PLUGIN_WPDADATAFORMS_POST,
+							isset( $_REQUEST['wpdadataforms_post'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['wpdadataforms_post'] ) ) : 'off' // input var okay.
+						);
+
+						WPDA::set_option(
+							WPDA::OPTION_PLUGIN_WPDADATAFORMS_PAGE,
+							isset( $_REQUEST['wpdadataforms_page'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['wpdadataforms_page'] ) ) : 'off' // input var okay.
+						);
+
 						if ( isset( $_REQUEST['date_format'] ) ) {
 							WPDA::set_option(
 								WPDA::OPTION_PLUGIN_DATE_FORMAT,
@@ -589,6 +619,8 @@ namespace WPDataAccess\Settings {
 						WPDA::set_option( WPDA::OPTION_PLUGIN_WPDATAACCESS_PAGE );
 						WPDA::set_option( WPDA::OPTION_PLUGIN_WPDADIEHARD_POST );
 						WPDA::set_option( WPDA::OPTION_PLUGIN_WPDADIEHARD_PAGE );
+						WPDA::set_option( WPDA::OPTION_PLUGIN_WPDADATAFORMS_POST );
+						WPDA::set_option( WPDA::OPTION_PLUGIN_WPDADATAFORMS_PAGE );
 
 						WPDA::set_option( WPDA::OPTION_PLUGIN_DATE_FORMAT );
 						WPDA::set_option( WPDA::OPTION_PLUGIN_DATE_PLACEHOLDER );
@@ -614,10 +646,12 @@ namespace WPDataAccess\Settings {
 			$secret_key = WPDA::get_option( WPDA::OPTION_PLUGIN_SECRET_KEY );
 			$secret_iv  = WPDA::get_option( WPDA::OPTION_PLUGIN_SECRET_IV );
 
-			$wpdataaccess_post = WPDA::get_option( WPDA::OPTION_PLUGIN_WPDATAACCESS_POST );
-			$wpdataaccess_page = WPDA::get_option( WPDA::OPTION_PLUGIN_WPDATAACCESS_PAGE );
-			$wpdadiehard_post  = WPDA::get_option( WPDA::OPTION_PLUGIN_WPDADIEHARD_POST );
-			$wpdadiehard_page  = WPDA::get_option( WPDA::OPTION_PLUGIN_WPDADIEHARD_PAGE );
+			$wpdataaccess_post  = WPDA::get_option( WPDA::OPTION_PLUGIN_WPDATAACCESS_POST );
+			$wpdataaccess_page  = WPDA::get_option( WPDA::OPTION_PLUGIN_WPDATAACCESS_PAGE );
+			$wpdadiehard_post   = WPDA::get_option( WPDA::OPTION_PLUGIN_WPDADIEHARD_POST );
+			$wpdadiehard_page   = WPDA::get_option( WPDA::OPTION_PLUGIN_WPDADIEHARD_PAGE );
+			$wpdadataforms_post = WPDA::get_option( WPDA::OPTION_PLUGIN_WPDADATAFORMS_POST );
+			$wpdadataforms_page = WPDA::get_option( WPDA::OPTION_PLUGIN_WPDADATAFORMS_PAGE );
 
 			$date_format      = WPDA::get_option( WPDA::OPTION_PLUGIN_DATE_FORMAT );
 			$date_placeholder = WPDA::get_option( WPDA::OPTION_PLUGIN_DATE_PLACEHOLDER );
@@ -685,7 +719,7 @@ namespace WPDataAccess\Settings {
 				}
 			</style>
 			<script type='text/javascript'>
-				jQuery(document).ready(function () {
+				jQuery(function () {
 					jQuery('.radio_date_format').on('click', function() {
 						jQuery('#date_format').val(jQuery(this).val());
 					});
@@ -780,17 +814,17 @@ namespace WPDataAccess\Settings {
 							port: port,
 							schema: dbs
 						}
-					}).success(
+					}).done(
 						function (msg) {
 							jQuery('#remote_database_block_test_content').html(msg);
 							jQuery('#remote_database_block_test').show();
 						}
-					).error(
+					).fail(
 						function () {
 							jQuery('#remote_database_block_test_content').html('Preparing connection...<br/>Establishing connection...<br/><br/><strong>Remote database connection invalid</strong>');
 							jQuery('#remote_database_block_test').show();
 						}
-					).complete(
+					).always(
 						function () {
 							jQuery('#remote_test_button').val('Test');
 							jQuery('#remote_clear_button').show();
@@ -798,7 +832,7 @@ namespace WPDataAccess\Settings {
 					);
 				}
 
-				jQuery(document).ready(function () {
+				jQuery(function () {
 					jQuery('#remote_database').keydown(function(e) {
 						var field = this;
 						setTimeout(function () {
@@ -995,7 +1029,7 @@ namespace WPDataAccess\Settings {
 						</td>
 					</tr>
 					<tr>
-						<th><?php echo __( 'Shortcode [WPDATAACCESS]' ); ?></th>
+						<th><?php echo __( 'Shortcode [wpdataaccess]' ); ?></th>
 						<td>
 							<label>
 								<input type="checkbox" name="wpdataaccess_post" <?php echo 'on'===$wpdataaccess_post ? 'checked="checked"' : ''; ?>/>
@@ -1009,7 +1043,7 @@ namespace WPDataAccess\Settings {
 						</td>
 					</tr>
 					<tr>
-						<th><?php echo __( 'Shortcode [WPDADIEHARD]' ); ?></th>
+						<th><?php echo __( 'Shortcode [wpdadiehard]' ); ?></th>
 						<td>
 							<label>
 								<input type="checkbox" name="wpdadiehard_post" <?php echo 'on'===$wpdadiehard_post ? 'checked="checked"' : ''; ?>/>
@@ -1022,6 +1056,28 @@ namespace WPDataAccess\Settings {
 							</label>
 						</td>
 					</tr>
+					<?php
+					if ( wpda_fremius()->is_premium() ) {
+					?>
+					<tr>
+						<th><?php echo __( 'Shortcode [wpdadataforms]' ); ?></th>
+						<td>
+							<label>
+								<input type="checkbox" name="wpdadataforms_post" <?php echo 'on'===$wpdadataforms_post ? 'checked="checked"' : ''; ?>/>
+								Allow in posts
+							</label>
+							<br/>
+							<label>
+								<input type="checkbox" name="wpdadataforms_page" <?php echo 'on'===$wpdadataforms_page ? 'checked="checked"' : ''; ?>/>
+								Allow in pages
+							</label>
+							<br/><br/>
+							This settings affects both <strong>Data Forms</strong> shortcodes: <strong>wpdadataprojects</strong> and <strong>wpdadataforms</strong>
+						</td>
+					</tr>
+					<?php
+					}
+					?>
 					<tr>
 						<th><?php echo __( 'Date format' ); ?></th>
 						<td>
@@ -1257,7 +1313,7 @@ namespace WPDataAccess\Settings {
 				}
 			</style>
 			<script type='text/javascript'>
-				jQuery(document).ready(function () {
+				jQuery(function () {
 					var text_to_clipboard = new ClipboardJS("#button-copy-to-clipboard", {
 						text: function () {
 							clipboard_text = "";
@@ -1705,19 +1761,19 @@ namespace WPDataAccess\Settings {
 		}
 
 		/**
-		 * Add data publisher tab content
+		 * Add data tables tab content
 		 *
 		 * See class documentation for flow explanation.
 		 *
 		 * @since   2.0.15
 		 */
-		protected function add_content_datapublisher() {
+		protected function add_content_datatables() {
 			if ( isset( $_REQUEST['action'] ) ) {
 				$action = sanitize_text_field( wp_unslash( $_REQUEST['action'] ) ); // input var okay.
 
 				// Security check.
 				$wp_nonce = isset( $_REQUEST['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['_wpnonce'] ) ) : ''; // input var okay.
-				if ( ! wp_verify_nonce( $wp_nonce, 'wpda-publication-settings' ) ) {
+				if ( ! wp_verify_nonce( $wp_nonce, 'wpda-datatables-settings' ) ) {
 					wp_die( __( 'ERROR: Not authorized', 'wp-data-access' ) );
 				}
 
@@ -1755,25 +1811,6 @@ namespace WPDataAccess\Settings {
 						}
 					}
 
-					if ( isset( $_REQUEST['publication_roles'] ) ) {
-						$publication_roles_request = isset( $_REQUEST['publication_roles'] ) ? $_REQUEST['publication_roles'] : null;
-						if ( is_array( $publication_roles_request ) ) {
-							$publication_roles = implode( ',', $publication_roles_request );
-						} else {
-							$publication_roles = '';
-						}
-					} else {
-						$publication_roles = '';
-					}
-					WPDA::set_option( WPDA::OPTION_DP_PUBLICATION_ROLES, $publication_roles );
-
-					if ( isset( $_REQUEST['json_editing'] ) ) {
-						WPDA::set_option(
-							WPDA::OPTION_DP_JSON_EDITING,
-							sanitize_text_field( wp_unslash( $_REQUEST['json_editing'] ) )
-						);
-					}
-
 					if ( isset( $_REQUEST['language'] ) ) {
 						WPDA::set_option(
 							WPDA::OPTION_DP_LANGUAGE,
@@ -1781,18 +1818,14 @@ namespace WPDataAccess\Settings {
 						);
 					}
 				} elseif ( 'setdefaults' === $action ) {
-					// Set all publication settings back to default.
+					// Set all datatables settings back to default.
 					WPDA::set_option( WPDA::OPTION_BE_LOAD_DATATABLES );
 					WPDA::set_option( WPDA::OPTION_FE_LOAD_DATATABLES );
 
 					WPDA::set_option( WPDA::OPTION_BE_LOAD_DATATABLES_RESPONSE );
 					WPDA::set_option( WPDA::OPTION_FE_LOAD_DATATABLES_RESPONSE );
 
-					WPDA::set_option( WPDA::OPTION_DP_PUBLICATION_ROLES );
-
 					WPDA::set_option( WPDA::OPTION_DP_LANGUAGE );
-
-					WPDA::set_option( WPDA::OPTION_DP_JSON_EDITING );
 				}
 
 				$msg = new WPDA_Message_Box(
@@ -1830,21 +1863,11 @@ namespace WPDataAccess\Settings {
 				$load_datatables_responsive = '';
 			}
 
-			global $wp_roles;
-			$lov_roles = [];
-			foreach ( $wp_roles->roles as $role => $val ) {
-				array_push( $lov_roles, $role );
-			}
-			$publication_roles = WPDA::get_option( WPDA::OPTION_DP_PUBLICATION_ROLES );
-
 			$current_language = WPDA::get_option( WPDA::OPTION_DP_LANGUAGE );
-
-			$json_editing = WPDA::get_option( WPDA::OPTION_DP_JSON_EDITING );
 			?>
-			<form id="wpda_settings_publication" method="post"
-				  action="?page=<?php echo esc_attr( $this->page ); ?>&tab=datapublisher">
+			<form id="wpda_settings_datatables" method="post"
+				  action="?page=<?php echo esc_attr( $this->page ); ?>&tab=datatables">
 				<table class="wpda-table-settings">
-					<tr>
 					<tr>
 						<th>jQuery DataTables</th>
 						<td>
@@ -1910,6 +1933,116 @@ namespace WPDataAccess\Settings {
 						</td>
 					</tr>
 					<tr>
+						<th><?php echo __( 'Front-End Language', 'wp-data-access' ); ?></th>
+						<td>
+							<select name="language">
+								<?php
+								foreach ( self::FRONTEND_LANG as $language ) {
+									$checked = $current_language === $language ? ' selected' : '';
+									echo "<option value='$language'$checked>$language</option>";
+								}
+								?>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<th><span class="dashicons dashicons-info" style="float:right;font-size:300%;"></span></th>
+						<td>
+							<span class="dashicons dashicons-yes"></span>
+							<?php echo __( 'jQuery DataTables (+Responsive) is needed in the Front-end to support publications on your website', 'wp-data-access' ); ?>
+							<br/>
+							<span class="dashicons dashicons-yes"></span>
+							<?php echo __( 'jQuery DataTables (+Responsive) is needed in the Back-end to test publications in the WordPress dashboard', 'wp-data-access' ); ?>
+							<br/>
+							<span class="dashicons dashicons-yes"></span>
+							<?php echo __( 'If you have already loaded jQuery DataTables for other purposes disable loading them to prevent duplication errors', 'wp-data-access' ); ?>
+						</td>
+					</tr>
+				</table>
+				<div class="wpda-table-settings-button">
+					<input type="hidden" name="action" value="save"/>
+					<input type="submit"
+						   value="<?php echo __( 'Save DataTables Settings', 'wp-data-access' ); ?>"
+						   class="button button-primary"/>
+					<a href="javascript:void(0)"
+					   onclick="if (confirm('<?php echo __( 'Reset to defaults?', 'wp-data-access' ); ?>')) {
+							   jQuery('input[name=&quot;action&quot;]').val('setdefaults');
+							   jQuery('#wpda_settings_datatables').trigger('submit')
+							   }"
+					   class="button">
+						<?php echo __( 'Reset DataTables Settings To Defaults', 'wp-data-access' ); ?>
+					</a>
+				</div>
+				<?php wp_nonce_field( 'wpda-datatables-settings', '_wpnonce', false ); ?>
+			</form>
+			<?php
+		}
+
+		/**
+		 * Add data publisher tab content
+		 *
+		 * See class documentation for flow explanation.
+		 *
+		 * @since   2.0.15
+		 */
+		protected function add_content_datapublisher() {
+			if ( isset( $_REQUEST['action'] ) ) {
+				$action = sanitize_text_field( wp_unslash( $_REQUEST['action'] ) ); // input var okay.
+
+				// Security check.
+				$wp_nonce = isset( $_REQUEST['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['_wpnonce'] ) ) : ''; // input var okay.
+				if ( ! wp_verify_nonce( $wp_nonce, 'wpda-publication-settings' ) ) {
+					wp_die( __( 'ERROR: Not authorized', 'wp-data-access' ) );
+				}
+
+				if ( 'save' === $action ) {
+					// Save options.
+					if ( isset( $_REQUEST['publication_roles'] ) ) {
+						$publication_roles_request = isset( $_REQUEST['publication_roles'] ) ? $_REQUEST['publication_roles'] : null;
+						if ( is_array( $publication_roles_request ) ) {
+							$publication_roles = implode( ',', $publication_roles_request );
+						} else {
+							$publication_roles = '';
+						}
+					} else {
+						$publication_roles = '';
+					}
+					WPDA::set_option( WPDA::OPTION_DP_PUBLICATION_ROLES, $publication_roles );
+
+					if ( isset( $_REQUEST['json_editing'] ) ) {
+						WPDA::set_option(
+							WPDA::OPTION_DP_JSON_EDITING,
+							sanitize_text_field( wp_unslash( $_REQUEST['json_editing'] ) )
+						);
+					}
+				} elseif ( 'setdefaults' === $action ) {
+					// Set all publication settings back to default.
+					WPDA::set_option( WPDA::OPTION_DP_PUBLICATION_ROLES );
+					WPDA::set_option( WPDA::OPTION_DP_JSON_EDITING );
+				}
+
+				$msg = new WPDA_Message_Box(
+					[
+						'message_text' => __( 'Settings saved', 'wp-data-access' ),
+					]
+				);
+				$msg->box();
+
+			}
+
+			global $wp_roles;
+			$lov_roles = [];
+			foreach ( $wp_roles->roles as $role => $val ) {
+				array_push( $lov_roles, $role );
+			}
+			$publication_roles = WPDA::get_option( WPDA::OPTION_DP_PUBLICATION_ROLES );
+
+			$json_editing = WPDA::get_option( WPDA::OPTION_DP_JSON_EDITING );
+			?>
+			<form id="wpda_settings_publication" method="post"
+				  action="?page=<?php echo esc_attr( $this->page ); ?>&tab=datapublisher">
+				<table class="wpda-table-settings">
+					<tr>
 						<th><?php echo __( 'Data Publisher Tool Access', 'wp-data-access' ); ?></th>
 						<td><?php echo __( 'Select the WordPress roles which should be allowed to have access to the Data Publisher tool', 'wp-data-access' ); ?>
 							<div style="height:10px"></div>
@@ -1924,19 +2057,6 @@ namespace WPDataAccess\Settings {
 									?>
 									<option value="<?php echo $lov_role; ?>" <?php echo $granted; ?>><?php echo $lov_role; ?></option>
 									<?php
-								}
-								?>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<th><?php echo __( 'Front-End Language', 'wp-data-access' ); ?></th>
-						<td>
-							<select name="language">
-								<?php
-								foreach ( self::FRONTEND_LANG as $language ) {
-									$checked = $current_language === $language ? ' selected' : '';
-									echo "<option value='$language'$checked>$language</option>";
 								}
 								?>
 							</select>
@@ -1962,15 +2082,6 @@ namespace WPDataAccess\Settings {
 						<th><span class="dashicons dashicons-info" style="float:right;font-size:300%;"></span></th>
 						<td>
 							<span class="dashicons dashicons-yes"></span>
-							<?php echo __( 'jQuery DataTables (+Responsive) is needed in the Front-end to support publications on your website', 'wp-data-access' ); ?>
-							<br/>
-							<span class="dashicons dashicons-yes"></span>
-							<?php echo __( 'jQuery DataTables (+Responsive) is needed in the Back-end to test publications in the WordPress dashboard', 'wp-data-access' ); ?>
-							<br/>
-							<span class="dashicons dashicons-yes"></span>
-							<?php echo __( 'If you have already loaded jQuery DataTables for other purposes disable loading them to prevent duplication errors', 'wp-data-access' ); ?>
-							<br/>
-							<span class="dashicons dashicons-yes"></span>
 							<?php echo __( 'Users have readonly access to tables to which you have granted access in Front-end Settings only', 'wp-data-access' ); ?>
 						</td>
 					</tr>
@@ -1990,6 +2101,107 @@ namespace WPDataAccess\Settings {
 					</a>
 				</div>
 				<?php wp_nonce_field( 'wpda-publication-settings', '_wpnonce', false ); ?>
+			</form>
+			<?php
+		}
+
+		/**
+		 * Add data forms tab content
+		 *
+		 * See class documentation for flow explanation.
+		 *
+		 * @since   4.0.0
+		 */
+		protected function add_content_dataforms() {
+			if ( isset( $_REQUEST['action'] ) ) {
+				$action = sanitize_text_field( wp_unslash( $_REQUEST['action'] ) ); // input var okay.
+
+				// Security check.
+				$wp_nonce = isset( $_REQUEST['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['_wpnonce'] ) ) : ''; // input var okay.
+				if ( ! wp_verify_nonce( $wp_nonce, 'wpda-forms-settings' ) ) {
+					wp_die( __( 'ERROR: Not authorized', 'wp-data-access' ) );
+				}
+
+				if ( 'save' === $action ) {
+					// Save options.
+					WPDA::set_option(
+						WPDA::OPTION_PLUGIN_WPDADATAFORMS_ALLOW_ANONYMOUS_ACCESS,
+						isset( $_REQUEST['allow_anonymous_access'] ) ? 'on' : 'off'
+					);
+
+					if ( isset( $_REQUEST['ui_theme'] ) ) {
+						WPDA::set_option(
+							WPDA::WPDA_DT_UI_THEME_DEFAULT,
+							sanitize_text_field( wp_unslash( $_REQUEST['ui_theme'] ) )
+						);
+					}
+				} elseif ( 'setdefaults' === $action ) {
+					// Set all publication settings back to default.
+					WPDA::set_option( WPDA::WPDA_DT_UI_THEME_DEFAULT );
+					WPDA::set_option( WPDA::OPTION_PLUGIN_WPDADATAFORMS_ALLOW_ANONYMOUS_ACCESS );
+				}
+
+				$msg = new WPDA_Message_Box(
+					[
+						'message_text' => __( 'Settings saved', 'wp-data-access' ),
+					]
+				);
+				$msg->box();
+			}
+
+			$ui_theme_default       = WPDA::get_option( WPDA::WPDA_DT_UI_THEME_DEFAULT );
+			$allow_anonymous_access = WPDA::get_option( WPDA::OPTION_PLUGIN_WPDADATAFORMS_ALLOW_ANONYMOUS_ACCESS );
+			?>
+			<form id="wpda_settings_forms" method="post"
+				  action="?page=<?php echo esc_attr( $this->page ); ?>&tab=dataforms">
+				<table class="wpda-table-settings">
+					<tr>
+						<th><?php echo __( 'Allow anonymous access', 'wp-data-access' ); ?></th>
+						<td>
+							<label>
+								<input type="checkbox" name="allow_anonymous_access" <?php echo 'on'===$allow_anonymous_access ? 'checked' : ''; ?>/>Enabled
+							</label>
+						</td>
+					</tr>
+					<tr>
+						<th><?php echo __( 'Default jQuery UI theme', 'wp-data-access' ); ?></th>
+						<td>
+							<select name="ui_theme">
+								<?php
+								foreach ( self::UI_THEMES as $ui_theme ) {
+									$selected = $ui_theme===$ui_theme_default ? ' selected' : '';
+									echo "<option value='{$ui_theme}'{$selected}>{$ui_theme}</option>";
+								}
+								?>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<th><span class="dashicons dashicons-info" style="float:right;font-size:300%;"></span></th>
+						<td>
+							<span class="dashicons dashicons-yes"></span>
+							<?php echo __( 'Data Forms are styled according to the default jQuery UI theme', 'wp-data-access' ); ?>
+							<br/>
+							<span class="dashicons dashicons-yes"></span>
+							<?php echo __( 'Individual styling per shortcode will be added later', 'wp-data-access' ); ?>
+						</td>
+					</tr>
+				</table>
+				<div class="wpda-table-settings-button">
+					<input type="hidden" name="action" value="save"/>
+					<input type="submit"
+						   value="<?php echo __( 'Save Data Forms  Settings', 'wp-data-access' ); ?>"
+						   class="button button-primary"/>
+					<a href="javascript:void(0)"
+					   onclick="if (confirm('<?php echo __( 'Reset to defaults?', 'wp-data-access' ); ?>')) {
+							   jQuery('input[name=&quot;action&quot;]').val('setdefaults');
+							   jQuery('#wpda_settings_forms').trigger('submit')
+							   }"
+					   class="button">
+						<?php echo __( 'Reset Data Forms Settings To Defaults', 'wp-data-access' ); ?>
+					</a>
+				</div>
+				<?php wp_nonce_field( 'wpda-forms-settings', '_wpnonce', false ); ?>
 			</form>
 			<?php
 		}
@@ -2442,7 +2654,7 @@ namespace WPDataAccess\Settings {
 								</select>
 							</div>
 							<script type='text/javascript'>
-								jQuery(document).ready(function () {
+								jQuery(function () {
 									jQuery("input[name='table_access']").on("click", function () {
 										if (this.value == 'select') {
 											jQuery("#tables_selected").show();
@@ -2697,7 +2909,7 @@ namespace WPDataAccess\Settings {
 							<label>
 								<input type="checkbox" name="use_roles_in_shortcode"
 									<?php echo 'on' === $use_roles_in_shortcode ? 'checked' : ''; ?>/>
-								<?php echo __( 'Use roles in shortcode wpdadiehard (Data Projects)', 'wp-data-access' ); ?>
+								<?php echo __( 'Use roles in Data Projects shortcodes', 'wp-data-access' ); ?>
 							</label>
 						</td>
 					</tr>
@@ -2724,7 +2936,7 @@ namespace WPDataAccess\Settings {
 								?>
 							</div>
 							<p>
-								<a href="void(0);" class="page-title-action" onclick="add_new_role(); return false;">Add
+								<a href="void(0);" class="button" onclick="add_new_role(); return false;">Add
 									New Role</a>
 							</p>
 						</td>
@@ -3432,6 +3644,23 @@ namespace WPDataAccess\Settings {
 						WPDA::OPTION_BE_DEBUG,
 						isset( $_REQUEST['debug'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['debug'] ) ) : 'off' // input var okay.
 					);
+
+					if (
+							isset( $_REQUEST['wpda_default_user'] ) &&
+							isset( $_REQUEST['wpda_default_database'] ) &&
+							'' !== $_REQUEST['wpda_default_user'] &&
+							'' !== $_REQUEST['wpda_default_database']
+					) {
+						$default_databases = get_option('wpda_default_database');
+						if ( false === $default_databases ) {
+							$default_databases = [];
+						}
+						$wpda_default_user     = sanitize_text_field( wp_unslash( $_REQUEST['wpda_default_user'] ) ); // input var okay.
+						$wpda_default_database = sanitize_text_field( wp_unslash( $_REQUEST['wpda_default_database'] ) ); // input var okay.
+
+						$default_databases[ $wpda_default_user ] = $wpda_default_database;
+						update_option( 'wpda_default_database', $default_databases );
+					}
 				} elseif ( 'setdefaults' === $action ) {
 					// Set all back-end settings back to default.
 					if ( $is_wp_database ) {
@@ -3463,6 +3692,17 @@ namespace WPDataAccess\Settings {
 					WPDA::set_option( WPDA::OPTION_BE_TEXT_WRAP_SWITCH );
 					WPDA::set_option( WPDA::OPTION_BE_TEXT_WRAP );
 					WPDA::set_option( WPDA::OPTION_BE_DEBUG );
+					update_option( 'wpda_default_database', [] );
+				} elseif ( 'delete_default_user_database' === $action ) {
+					if ( isset( $_REQUEST['wpda_default_database_delete'] ) ) {
+						$delete_user_id = sanitize_text_field( wp_unslash( $_REQUEST['wpda_default_database_delete'] ) ); // input var okay.
+
+						$default_databases = get_option('wpda_default_database');
+						if ( false !== $default_databases && isset( $default_databases[ $delete_user_id ]) ) {
+							unset( $default_databases[ $delete_user_id ] );
+							update_option( 'wpda_default_database', $default_databases );
+						}
+					}
 				}
 
 				$msg = new WPDA_Message_Box(
@@ -3591,7 +3831,7 @@ namespace WPDataAccess\Settings {
 								</select>
 							</div>
 							<script type='text/javascript'>
-								jQuery(document).ready(function () {
+								jQuery(function () {
 									jQuery("input[name='table_access']").on("click", function () {
 										if (this.value == 'select') {
 											jQuery("#tables_selected").show();
@@ -3728,6 +3968,79 @@ namespace WPDataAccess\Settings {
 									value="<?php echo esc_attr( $text_wrap ); ?>">
 						</td>
 					</tr>
+
+					<tr>
+						<th><?php echo __( 'Default database', 'wp-data-access' ); ?></th>
+						<td>
+							<div>
+								<?php
+								$users = [];
+								foreach ( get_users() as $user ) {
+									$users[ $user->data->ID ] = $user->data->user_login;
+								}
+
+								$databases    = [];
+								$db_databases = WPDA_Dictionary_Lists::get_db_schemas();
+								foreach ( $db_databases as $db_database ) {
+									$databases[ $db_database['schema_name'] ] = true;
+								}
+
+								$default_databases = get_option('wpda_default_database');
+								if ( is_array( $default_databases ) ) {
+									foreach ( $default_databases as $user_id => $database ) {
+										?>
+										<div id="wpda_default_database_<?php echo esc_attr( $user_id ); ?>">
+											<span class="dashicons dashicons-trash"
+												  style="font-size: 14px; vertical-align: text-top; cursor: pointer;"
+												  onclick="if (confirm('Remove default database for this user?')) { jQuery('#wpda_default_database_delete').val('<?php echo esc_attr( $user_id ); ?>'); jQuery('#delete_default_user_database_form').submit(); } "
+											></span>
+											<span>
+												<?php echo esc_attr( $users[ $user_id ] ); ?> > <?php echo esc_attr( $database ); ?>
+											</span>
+										</div>
+										<?php
+									}
+								}
+								?>
+							</div>
+							<?php
+							if ( sizeof( $default_databases ) > 0 ) {
+								echo "<br/>";
+							}
+							?>
+							<div>
+								<a href="javascript:void(0)" onclick="jQuery('#list_default_databases').show()" class="button">Define default database for user in Data Explorer</a>
+							</div>
+							<div id="list_default_databases" style="display:none">
+								<br/>
+								<div>
+									<label for="wpda_default_user">User: </label>
+									<select name="wpda_default_user" id="wpda_default_user">
+										<option value="">Select user</option>
+										<?php
+										foreach ( get_users() as $user ) {
+											echo '<option value="' . esc_attr( $user->data->ID ) . '">' . esc_attr( $user->data->user_login ) . '</option>';
+										}
+										?>
+									</select>
+									<label for="wpda_default_database">Database: </label>
+									<select name="wpda_default_database" id="wpda_default_database">
+										<option value="">Select database</option>
+										<?php
+										foreach ( $databases as $database => $value ) {
+											echo '<option value="' . esc_attr( $database ) . '">' . esc_attr( $database ) . '</option>';
+										}
+										?>
+									</select>
+									<span class="dashicons dashicons-trash"
+										  style="font-size: 14px; vertical-align: text-top; cursor: pointer;"
+										  onclick="jQuery('#list_default_databases').hide(); jQuery('#wpda_default_user').val(''); jQuery('#wpda_default_database').val('');"
+									></span>
+								</div>
+							</div>
+						</td>
+					</tr>
+
 					<tr>
 						<th><?php echo __( 'Debug mode', 'wp-data-access' ); ?></th>
 						<td>
@@ -3755,7 +4068,14 @@ namespace WPDataAccess\Settings {
 				</div>
 				<?php wp_nonce_field( 'wpda-back-end-settings', '_wpnonce', false ); ?>
 			</form>
-
+			<form id="delete_default_user_database_form"
+				  method="post"
+				  action="?page=<?php echo esc_attr( $this->page ); ?>&tab=backend"
+				  style="display:none">
+				<input type="hidden" name="wpda_default_database_delete" id="wpda_default_database_delete" value=""/>
+				<input type="hidden" name="action" value="delete_default_user_database"/>
+				<?php wp_nonce_field( 'wpda-back-end-settings', '_wpnonce', false ); ?>
+			</form>
 			<?php
 
 		}

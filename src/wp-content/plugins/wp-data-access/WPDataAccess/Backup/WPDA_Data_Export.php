@@ -253,7 +253,7 @@ namespace WPDataAccess\Backup {
 				<?php
 				}
 				?>
-				jQuery(document).ready(function () {
+				jQuery(function () {
 					jQuery("#keep option[value='<?php echo esc_attr( $keep ); ?>']").prop('selected', true);
 					jQuery("#interval option[value='<?php echo esc_attr( $interval ); ?>']").prop('selected', true);
 					for (var i = 0; i < tables_selected.length; i++) {
@@ -267,7 +267,7 @@ namespace WPDataAccess\Backup {
 				<?php
 				} else {
 				?>
-				jQuery(document).ready(function () {
+				jQuery(function () {
 					jQuery("#keep option[value='3']").prop('selected', true);
 					jQuery( '.wpda_tooltip' ).tooltip();
 				});
@@ -275,7 +275,7 @@ namespace WPDataAccess\Backup {
 				}
 				?>
 				function pre_submit() {
-					if (0 === jQuery("#wpda_table_name_export > option").size()) {
+					if (0 === jQuery("#wpda_table_name_export > option").length) {
 						alert('<?php echo __( 'No tables to be exported' ); ?>');
 						return false;
 					}
@@ -309,7 +309,7 @@ namespace WPDataAccess\Backup {
 					jQuery('#wpda_table_name_export > option').remove();
 				}
 
-				jQuery(document).ready(function () {
+				jQuery(function () {
 					jQuery('#wpda_table_name_db').on('click', function (event) {
 						if ('' !== event.target.text && undefined != event.target.text) {
 							jQuery('#wpda_table_name_export').append(jQuery('<option>', {
@@ -319,8 +319,6 @@ namespace WPDataAccess\Backup {
 							jQuery("#wpda_table_name_db option[value=" + event.target.text + "]").remove();
 						}
 					});
-				});
-				jQuery(document).ready(function () {
 					jQuery('#wpda_table_name_export').on('click', function (event) {
 						if ('' !== event.target.text && undefined != event.target.text) {
 							jQuery('#wpda_table_name_db').append(jQuery('<option>', {
@@ -557,7 +555,7 @@ namespace WPDataAccess\Backup {
 			echo '</div>';
 			?>
 			<script type="text/javascript">
-				jQuery(document).ready(function () {
+				jQuery(function () {
 					jQuery( '.wpda_tooltip' ).tooltip();
 				});
 			</script>

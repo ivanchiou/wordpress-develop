@@ -38,7 +38,7 @@ namespace WPDataAccess\CSV_Files {
 					</a>
 				</h1>&nbsp;
 				<form method="post"
-					  action="?page=wpda&page_action=wpda_import_csv&schema_name=<?php echo esc_attr( $this->schema_name ); ?>"
+					  action="?page=wpda&page_action=wpda_import_csv"
 					  style="display: inline-block; vertical-align: baseline;">
 					<button type="submit" class="page-title-action">
 						<span class="material-icons wpda_icon_on_button">cloud_upload</span>
@@ -53,7 +53,7 @@ namespace WPDataAccess\CSV_Files {
 				if ( 'mapping' === $this->action || 'import' === $this->action || 'reload' === $this->action ) {
 					?>
 					<form method="post"
-						  action="?page=wpda&page_action=wpda_import_csv&schema_name=<?php echo esc_attr( $this->schema_name ); ?>"
+						  action="?page=wpda&page_action=wpda_import_csv"
 						  style="display: inline-block; vertical-align: baseline;">
 						<button type="submit" class="page-title-action">
 							<span class="material-icons wpda_icon_on_button">arrow_back</span>
@@ -64,7 +64,7 @@ namespace WPDataAccess\CSV_Files {
 				}
 				?>
 				<form method="post"
-					  action="?page=wpda&schema_name=<?php echo esc_attr( $this->schema_name ); ?>"
+					  action="?page=wpda"
 					  style="display: inline-block; vertical-align: baseline;">
 					<button type="submit" class="page-title-action">
 						<span class="material-icons wpda_icon_on_button">arrow_back</span>
@@ -128,7 +128,7 @@ namespace WPDataAccess\CSV_Files {
 				</legend>
 				<form id="form_import_table"
 					  method="post"
-					  action="?page=wpda&page_action=wpda_import_csv&schema_name=<?php echo esc_attr( $this->schema_name ); ?>"
+					  action="?page=wpda&page_action=wpda_import_csv"
 					  enctype="multipart/form-data">
 					<label for="csv_name">
 						Import name
@@ -156,7 +156,7 @@ namespace WPDataAccess\CSV_Files {
 						<?php echo __( 'Upload', 'wp-data-access' ); ?>
 					</button>
 					<button type="button"
-						   	onclick="window.location.href='?page=wpda&page_action=wpda_import_csv&schema_name=<?php echo esc_attr( $this->schema_name ); ?>'"
+						   	onclick="window.location.href='?page=wpda&page_action=wpda_import_csv'"
 						   	class="button button-secondary"
 					>
 						<span class="material-icons wpda_icon_on_button">cancel</span>
@@ -276,7 +276,7 @@ namespace WPDataAccess\CSV_Files {
 												'number' === $data_type[ $table_columns[ $column ] ] ||
 												'date' === $data_type[ $table_columns[ $column ] ]
 										) {
-											if ( '' === $data[ $column ] ) {
+											if ( null === $data[ $column ] || 'null' === $data[ $column ] || '' === $data[ $column ] ) {
 												$wpda_insert_column_values[ $table_columns[ $column ] ] = null;
 											} else {
 												if ( 'number' === $data_type[ $table_columns[ $column ] ] ) {
@@ -308,7 +308,7 @@ namespace WPDataAccess\CSV_Files {
 								$inserted++;
 							} else {
 								// Try to insert with plain sql
-								$insert = "insert into `{$schema_name}`.`{$table_name}` ";
+								$insert = "insert into `{$wpdadb->dbname}`.`{$table_name}` ";
 								$insert .= "({$columns_inserted}) values (";
 								for ( $column = 0; $column < sizeof( $data ); $column++ ) {
 									if ( isset( $table_columns[ $column ] ) ) {
@@ -394,7 +394,7 @@ namespace WPDataAccess\CSV_Files {
 					$orig_file_name = $_FILES['filename']['name'];
 
 					// Process file and save a local copy
-					$fp           = $this->file_pointer = fopen( $temp_file_name, 'rb' );
+					$fp = $this->file_pointer = fopen( $temp_file_name, 'rb' );
 					if ( false !== $this->file_pointer ) {
 						if ( ! is_dir( $upload_dir ) ) {
 							mkdir( $upload_dir, 0755, true );
@@ -448,7 +448,7 @@ namespace WPDataAccess\CSV_Files {
 						<strong>Upload successful</strong>
 						<br/><br/>
 						<form method="post"
-							  action="?page=wpda&page_action=wpda_import_csv&schema_name=<?php echo esc_attr( $this->schema_name ); ?>"
+							  action="?page=wpda&page_action=wpda_import_csv"
 							  style="display: inline-block; vertical-align: baseline;">
 							<input type="hidden"
 								   name="csv_id"
@@ -466,7 +466,7 @@ namespace WPDataAccess\CSV_Files {
 							<input type="hidden" name="_wpnonce" value="<?php echo esc_attr( $wp_nonce ); ?>" />
 						</form>&nbsp;
 						<form method="post"
-							  action="?page=wpda&page_action=wpda_import_csv&schema_name=<?php echo esc_attr( $this->schema_name ); ?>"
+							  action="?page=wpda&page_action=wpda_import_csv"
 							  style="display: inline-block; vertical-align: baseline;">
 							<input type="submit"
 								   class="page-title-action"

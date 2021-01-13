@@ -286,7 +286,8 @@ function wpda_datatables_ajax_call(
 
 			jQuery("#" + table_name + pub_id + " tfoot th").each( function () {
 				let name = jQuery("#" + table_name + pub_id + " thead th").eq( jQuery(this).index() ).attr( "data-column_name_search" )	
-				jQuery("#searchFilterName").append('<option value="' + name + '">' + name + '</option>')
+                                let text = jQuery("#" + table_name + pub_id + " thead th").eq( jQuery(this).index() ).text()
+				jQuery("#searchFilterName").append('<option value="' + name + '">' + text + '</option>')
 			} );
 
 			jQuery("#" + table_name + pub_id + "_length").append('</select>')
@@ -297,7 +298,7 @@ function wpda_datatables_ajax_call(
 			jQuery("#" + table_name + pub_id + "_filter").append('<input type="button" id="searchAllButton" value="Search All" class="searchAll_button" />')
 			jQuery("#" + table_name + pub_id + "_filter label").remove();
 
-			jQuery( '#searchFilterButton').on( 'click', function () {
+			jQuery( '#searchFilterButton').on( 'click', function (e) {
 				const name = jQuery("#searchFilterName").val();
 				const value = jQuery("#searchFilterValue").val();
 				const searchValue =jQuery("#searchAllValue").val();
@@ -312,12 +313,13 @@ function wpda_datatables_ajax_call(
 				}
 			} );
 
-			jQuery( '#searchFilterValue').on( 'keyup change', function () {
+			jQuery( '#searchFilterValue').on( 'keyup change', function (e) {
 				const value = this.value
+                                const name = jQuery("#searchFilterName").val();
 				const searchValue = jQuery("#searchAllValue").val();
-				if(!value) {
-					filter_field_name = ""
-					filter_field_value = ""
+				if(!value || (value && (e.key === 'Enter' || e.keyCode === 13))) {
+					filter_field_name = name
+					filter_field_value = "%" + value + "%"
 					table
 						.search( searchValue )
 						.draw();
@@ -333,7 +335,18 @@ function wpda_datatables_ajax_call(
 				} else {
 					alert('Please input search word');
 				}
-			} );			
+			} );
+
+                        jQuery( '#searchAllValue').on( 'keyup change', function (e) {
+                                const value = this.value
+                                if(!value || (value && (e.key === 'Enter' || e.keyCode === 13))) {
+                                        table
+                                                .search( value )
+                                                .draw();
+                                }
+                        } );			
+
+			jQuery( '.dataTables_wrapper').show();
 			
 			// Apply the search
 			table.columns().eq(0).each( function (colIdx) {

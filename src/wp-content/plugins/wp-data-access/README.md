@@ -3,8 +3,8 @@
 * Contributors: [PeterSchulzNL](https://wpdataaccess.com/)
 * Donate link: https://www.paypal.me/kpsch
 * Requires at least: WordPress 4.8.3
-* Tested up to: WordPress 5.4
-* Stable tag: 3.6.5
+* Tested up to: WordPress 5.6
+* Stable tag: 4.0.1
 * License: GPLv2 or later
 * License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -16,15 +16,80 @@ WP Data Access is a powerful data administration, publication and development to
 
 For advanced users, the plugin support more complex features like remote database access, master-detail pages, lookups, WordPress role integration, WordPress user integration and a layer around your WordPress database which allows you to add database table and view specific functionality like dynamic hyperlinks and WordPress media library integration.
 
+### Data Explorer
+> Data and database administration
+
+* Manage local and remote databases
+* Database administration (rename, copy, drop, truncate...)
+* Data administration (search, insert, update, delete...)
+* Export to SQL, XML, JSON, CSV and Excel
+* Import SQL and CSV files
+* WordPress Media Library integration
+* Inline editing (PREMIUM)
+* Full-text search (PREMIUM)
+* Individual column search (PREMIUM)
+* Static hyperlinks
+* Dynamic hyperlinks
+
+### Data Publisher
+> Publish responsive tables
+
+* Responsive HTML tables
+* Supports local and remote databases
+* WordPress Media Library integration
+* Static and dynamic hyperlink integration
+* Easy level: no coding skills required
+* Advanced level: JSON configuration
+* Expert level: add JavaScript functions
+* Export to CSV, Excel, PDF and SQL (PREMIUM)
+* Print publication (PREMIUM)
+* Copy publication to clipboard (PREMIUM)
+* Individual column search (PREMIUM)
+* Full-text search (PREMIUM)
+
+### Data Projects
+> Write your own WordPress apps
+
+* Supports local and remote databases
+* Auto generated CRUD pages
+* Auto generate parent-child pages
+* WordPress role integration
+* WordPress media library integration
+* Statis and dynamic hyperlink integration
+* Accessible from the WordPress dashboard
+* Add to webpage with shortcode wpdadiehard (FREE)
+* Add to webpage with shortcode wpdadataforms (PREMIUM)
+* Inline editing (PREMIUM)
+* Full-text search (PREMIUM)
+* Individual column search (PREMIUM)
+
+### Data Forms (PREMIUM)
+> State of the art responsive apps
+
+* Turn your Data Project into a responsive app
+* jQuery DataTables
+* AngularJS
+* jQuery UI styling
+
+### Data Designer
+> Create tables and indexes
+
+* Create and alter tables and indexes
+* Supports reverse engineering and reconciliation
+
+### Plugin Settings
+> Manage plugin behaviour, style and security
+
+* Many detailed plugin settings
+* User access and permission
+* Integrated WordPress role management
+
 ### Sources
 
 [» Plugin Website](https://wpdataaccess.com/)
-
 [» Download plugin](https://wordpress.org/plugins/wp-data-access/) 
-
 [» What's New](https://wpdataaccess.com/docs/documentation/updates/whats-new/)
-
-[» Known Limitations](https://wpdataaccess.com/docs/documentation/getting-started/known-limitations/)
+[» Documentation](https://wpdataaccess.com/docs/documentation/)
 
 ## License
 

@@ -88,29 +88,13 @@ namespace WPDataAccess\Data_Publisher {
 			?>
 			<a href="javascript:void(0)"
 			   onclick="jQuery('#data_publisher_test_container_<?php echo esc_html( $pub_id ); ?>').toggle()"
-			   class="button <?php echo $disabled; ?>"><span class="material-icons wpda_icon_on_button">bug_report</span><?php echo __( 'Test Publication', 'wp-data-access' ); ?></a>
-			<a href="javascript:void(0)"
-			   onclick='prompt("<?php echo __( 'Publication Shortcode', 'wp-data-access' ); ?>", "[wpdataaccess pub_id=\"<?php echo $pub_id; ?>\"]")'
-			   class="button <?php echo $disabled; ?>"><span class="material-icons wpda_icon_on_button">code</span><?php echo __( 'Show Shortcode', 'wp-data-access' ); ?></a>
-			<a href="javascript:void(0)" id="button-copy-to-clipboard"
-			   class="button <?php echo $disabled; ?>"><span class="material-icons wpda_icon_on_button">content_copy</span><?php echo __( 'Copy Shortcode', 'wp-data-access' ); ?></a>
-			<script type='text/javascript'>
-				jQuery(document).ready(function () {
-					var text_to_clipboard = new ClipboardJS("#button-copy-to-clipboard", {
-						text: function () {
-							clipboard_text = "[wpdataaccess pub_id=\"<?php echo $pub_id; ?>\"]";
-							return clipboard_text;
-						}
-					});
-					text_to_clipboard.on('success', function (e) {
-						jQuery.notify('<?php echo __( 'Shortcode successfully copied to clipboard!' ); ?>','info');
-					});
-					text_to_clipboard.on('error', function (e) {
-						jQuery.notify('<?php echo __( 'Could not copy shortcode to clipboard!' ); ?>','error');
-					});
-				});
-			</script>
+			   class="button wpda_tooltip <?php echo $disabled; ?>"
+			   title="Test publication"
+			>
+				<span class="material-icons wpda_icon_on_button">bug_report</span><?php echo __( 'Test', 'wp-data-access' ); ?>
+			</a>
 			<?php
+			$this->show_shortcode( $pub_id );
 		}
 
 		/**
@@ -135,7 +119,7 @@ namespace WPDataAccess\Data_Publisher {
 				// Prepare listbox for column pub_schema_name
 				if ( $form_item->get_item_name() === 'pub_schema_name' ) {
 					if ( '' === $form_item->get_item_value() ) {
-						$form_item->set_item_value( $wpdb->dbname );
+						$form_item->set_item_value( WPDA::get_user_default_scheme() );
 					}
 					$form_item->set_enum( $databases );
 					$this->form_items[ $i ] = new WPDA_Simple_Form_Item_Enum( $form_item );
@@ -191,7 +175,7 @@ namespace WPDataAccess\Data_Publisher {
 					'pub_table_options_advanced' === $form_item->get_item_name() ||
 					'pub_sort_icons' === $form_item->get_item_name()
 				) {
-					$form_item->set_hide_item( true );
+					$form_item->set_hide_item_init( true );
 				}
 
 				if ( 'pub_table_options_advanced' === $form_item->get_item_name() ) {
@@ -205,7 +189,7 @@ namespace WPDataAccess\Data_Publisher {
 					'pub_table_options_ordering' === $form_item->get_item_name() ||
 					'pub_table_options_paging' === $form_item->get_item_name()
 				) {
-					$form_item->set_hide_item( true );
+					$form_item->set_hide_item_init( true );
 					$form_item->checkbox_value_on = 'on';
 					if ( 'new' === $this->action ) {
 						$form_item->set_item_value( 'on' );
@@ -214,7 +198,7 @@ namespace WPDataAccess\Data_Publisher {
 				}
 
 				if ( 'pub_table_options_nl2br' === $form_item->get_item_name() ) {
-					$form_item->set_hide_item( true );
+					$form_item->set_hide_item_init( true );
 					$form_item->checkbox_value_on = 'on';
 					$this->form_items[ $i ] = new WPDA_Simple_Form_Item_Boolean( $form_item );
 				}
@@ -333,7 +317,7 @@ namespace WPDataAccess\Data_Publisher {
 					);
 				}
 
-				jQuery(document).ready(function () {
+				jQuery(function () {
 					pub_table_options_searching = jQuery('#pub_table_options_searching').parent().parent();
 					pub_table_options_ordering = jQuery('#pub_table_options_ordering').parent().parent().children();
 					pub_table_options_ordering_tr = jQuery(pub_table_options_ordering).parent().parent();
@@ -426,7 +410,7 @@ namespace WPDataAccess\Data_Publisher {
 						jQuery("#columns_selected option[value='*']").remove();
 					}
 
-					jQuery('select#columns_selected option').removeAttr("selected");
+					jQuery('select#columns_selected option').prop("selected", false);
 				}
 
 				function select_selected(e) {
@@ -445,7 +429,7 @@ namespace WPDataAccess\Data_Publisher {
 						jQuery("#columns_selected").append(jQuery('<option></option>').attr('value', '*').text(no_cols_selected));
 					}
 
-					jQuery('select#columns_available option').removeAttr("selected");
+					jQuery('select#columns_available option').prop("selected", false);
 				}
 
 				function select_columns(e) {
@@ -496,12 +480,9 @@ namespace WPDataAccess\Data_Publisher {
 					);
 
 					var dialog_table = jQuery('<table style="width:410px"></table>');
-
-					var dialog_table_row_available = dialog_table.append(jQuery('<tr></tr>').append(jQuery('<td width="50%"></td>')));
-					dialog_table_row_available.append(columns_available);
-					
-					var dialog_table_row_selected = dialog_table.append(jQuery('<tr></tr>').append(jQuery('<td width="50%"></td>')));
-					dialog_table_row_selected.append(columns_selected);
+					var dialog_table_row = dialog_table.append(jQuery('<tr></tr>'));
+					dialog_table_row.append(jQuery('<td width="50%"></td>').append(columns_available));
+					dialog_table_row.append(jQuery('<td width="50%"></td>').append(columns_selected));
 
 					var dialog_text = jQuery('<div style="width:410px"></div>');
 					var dialog = jQuery('<div></div>');
@@ -637,6 +618,65 @@ namespace WPDataAccess\Data_Publisher {
 			</script>
 			<?php
 			self::show_publication( $pub_id, $table_name );
+		}
+
+		protected function show_shortcode( $pub_id ) {
+			// Show publication shortcode directly from Data Publisher main page
+			$shortcode_enabled =
+				'on' === WPDA::get_option( WPDA::OPTION_PLUGIN_WPDATAACCESS_POST ) &&
+				'on' === WPDA::get_option( WPDA::OPTION_PLUGIN_WPDATAACCESS_PAGE );
+
+			?>
+			<div id="wpda_publication_<?php echo esc_attr( $pub_id ); ?>"
+				 title="<?php echo __( 'Publication shortcode', 'wp-data-access' ); ?>"
+				 style="display:none"
+			>
+				<p>
+					Copy the shortcode below into your post or page to make this publications available on your website.
+				</p>
+				<p class="wpda_shortcode_text">
+					<strong>
+						[wpdataaccess pub_id="<?php echo esc_attr( $pub_id ); ?>"]
+					</strong>
+				</p>
+				<p class="wpda_shortcode_buttons">
+					<button class="button wpda_shortcode_clipboard wpda_shortcode_button"
+							type="button"
+							data-clipboard-text='[wpdataaccess pub_id="<?php echo esc_attr( $pub_id ); ?>"]'
+							onclick="jQuery.notify('<?php echo __( 'Shortcode successfully copied to clipboard!' ); ?>','info')"
+					>
+						<?php echo __( 'Copy', 'wp-data-access' ); ?>
+					</button>
+					<button class="button button-primary wpda_shortcode_button"
+							type="button"
+							onclick="jQuery('.ui-dialog-content').dialog('close')"
+					>
+						<?php echo __( 'Close', 'wp-data-access' ); ?>
+					</button>
+				</p>
+				<?php
+				if ( ! $shortcode_enabled ) {
+					?>
+					<p>
+						Shortcode wpdataaccess is not enabled for all output types.
+						<a href="options-general.php?page=wpdataaccess" class="wpda_shortcode_link">&raquo; Manage settings</a>
+					</p>
+					<?php
+				}
+				?>
+			</div>
+			<a href="javascript:void(0)"
+			   class="button view wpda_tooltip"
+			   title="<?php echo __( 'Get publication shortcode', 'wp-data-access' ); ?>"
+			   onclick="jQuery('#wpda_publication_<?php echo esc_attr( $pub_id ); ?>').dialog()"
+		    >
+				<span style="white-space:nowrap">
+					<span class="material-icons wpda_icon_on_button">code</span>
+					<?php echo __( 'Shortcode', 'wp-data-access' ); ?>
+				</span>
+			</a>
+			<?php
+			WPDA::shortcode_popup();
 		}
 
 		public static function show_publication( $pub_id, $table_name ) {

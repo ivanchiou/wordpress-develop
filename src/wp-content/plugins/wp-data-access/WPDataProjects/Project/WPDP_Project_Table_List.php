@@ -102,10 +102,13 @@ namespace WPDataProjects\Project {
 				if ( '' === $pub_schema_name ) {
 					$pub_schema_name = $wpdb->dbname;
 				}
+
 				if ( isset( $database_tables[ $pub_schema_name ] ) ) {
 					$tables = $database_tables[ $pub_schema_name ];
 				}
 			}
+
+			$user_default_schema = WPDA::get_user_default_scheme();
 			?>
 			<form
 					method="post"
@@ -126,7 +129,7 @@ namespace WPDataProjects\Project {
 					<select name="wpda_schema_name" id="wpda_schema_name">
 						<?php
 						foreach ( $schema_names as $schema_name ) {
-							$selected = $wpdb->dbname === $schema_name['schema_name'] ? ' selected' : '';
+							$selected = $user_default_schema === $schema_name['schema_name'] ? ' selected' : '';
 							echo "<option value='{$schema_name['schema_name']}'{$selected}>{$schema_name['schema_name']}</option>";
 						}
 						?>
@@ -134,8 +137,8 @@ namespace WPDataProjects\Project {
 					<select name="wpda_table_name" id="wpda_table_name">
 						<?php
 						global $wpdb;
-						if ( isset( $database_tables[ $wpdb->dbname ] ) ) {
-							foreach ( $database_tables[ $wpdb->dbname ] as $table ) {
+						if ( isset( $database_tables[ $user_default_schema ] ) ) {
+							foreach ( $database_tables[ $user_default_schema ] as $table ) {
 								?>
 								<option value="<?php echo esc_attr( $table ); ?>"><?php echo esc_attr( $table ); ?></option>
 								<?php
@@ -160,7 +163,7 @@ namespace WPDataProjects\Project {
 				}
 				?>
 
-				jQuery(document).ready(function () {
+				jQuery(function () {
 					jQuery('#wpda_schema_name').on('change', function () {
 						jQuery('#wpda_table_name').empty();
 						var tables = database_tables[jQuery(this).val()];

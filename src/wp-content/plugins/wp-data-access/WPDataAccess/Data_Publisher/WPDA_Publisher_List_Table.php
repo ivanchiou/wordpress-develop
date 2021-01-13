@@ -12,6 +12,7 @@ namespace WPDataAccess\Data_Publisher {
 	use WPDataAccess\List_Table\WPDA_List_Table;
 	use WPDataAccess\Plugin_Table_Models\WPDA_Publisher_Model;
 	use WPDataAccess\Utilities\WPDA_Message_Box;
+	use WPDataAccess\WPDA;
 
 	/**
 	 * Class WPDA_Publisher_List_Table extends WPDA_List_Table
@@ -114,20 +115,64 @@ namespace WPDataAccess\Data_Publisher {
 			);
 
 			// Show publication shortcode directly from Data Publisher main page
+			$shortcode_enabled =
+				'on' === WPDA::get_option( WPDA::OPTION_PLUGIN_WPDATAACCESS_POST ) &&
+				'on' === WPDA::get_option( WPDA::OPTION_PLUGIN_WPDATAACCESS_PAGE );
+
+			?>
+			<div id="wpda_publication_<?php echo esc_attr( $item['pub_id'] ); ?>"
+				 title="<?php echo __( 'Shortcode', 'wp-data-access' ); ?>"
+				 style="display:none"
+			>
+				<p>
+					Copy the shortcode below into your post or page to make this publications available on your website.
+				</p>
+				<p class="wpda_shortcode_text">
+					<strong>
+						[wpdataaccess pub_id="<?php echo esc_attr( $item['pub_id'] ); ?>"]
+					</strong>
+				</p>
+				<p class="wpda_shortcode_buttons">
+					<button class="button wpda_shortcode_clipboard wpda_shortcode_button"
+							type="button"
+							data-clipboard-text='[wpdataaccess pub_id="<?php echo esc_attr( $item['pub_id'] ); ?>"]'
+							onclick="jQuery.notify('<?php echo __( 'Shortcode successfully copied to clipboard!' ); ?>','info')"
+					>
+						<?php echo __( 'Copy', 'wp-data-access' ); ?>
+					</button>
+					<button class="button button-primary wpda_shortcode_button"
+							type="button"
+							onclick="jQuery('.ui-dialog-content').dialog('close')"
+					>
+						<?php echo __( 'Close', 'wp-data-access' ); ?>
+					</button>
+				</p>
+				<?php
+				if ( ! $shortcode_enabled ) {
+					?>
+					<p>
+						Shortcode wpdataaccess is not enabled for all output types.
+						<a href="options-general.php?page=wpdataaccess" class="wpda_shortcode_link">&raquo; Manage settings</a>
+					</p>
+					<?php
+				}
+				?>
+			</div>
+			<?php
+
 			$actions['shortcode'] = sprintf(
 				'<a href="javascript:void(0)" 
-									title="%s"
-                                    class="view wpda_tooltip"  
-                                    onclick=\'prompt("%s", "[wpdataaccess pub_id=\"%s\"]")\'>
-                                    <span style="white-space: nowrap">
-										<span class="material-icons wpda_icon_on_button">code</span>
-										%s
-                                    </span>
-                                </a>
-                                ',
-				__( 'Show/copy shortcode in popup', 'wp-data-access' ),
-				__( 'Publication Shortcode', 'wp-data-access' ),
-				$item['pub_id'],
+						class="view wpda_tooltip"  
+						title="%s"
+						onclick="jQuery(\'#wpda_publication_%s\').dialog()"
+						<span style="white-space:nowrap">
+							<span class="material-icons wpda_icon_on_button">code</span>
+							%s
+						</span>
+					</a>
+					',
+				__( 'Get publication shortcode', 'wp-data-access' ),
+				esc_attr( $item['pub_id'] ),
 				__( 'Shortcode', 'wp-data-access' )
 			);
 		}
@@ -258,6 +303,13 @@ namespace WPDataAccess\Data_Publisher {
 				'pub_responsive_modal_hyperlinks' => __( 'Modal Hyperlinks', 'wp-data-access' ),
 				'pub_responsive_icon'             => __( 'Responsive Icon?', 'wp-data-access' ),
 			];
+		}
+
+		// Overwrite method
+		public function show() {
+			parent::show();
+
+			WPDA::shortcode_popup();
 		}
 
 	}

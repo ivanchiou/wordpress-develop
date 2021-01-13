@@ -1600,7 +1600,7 @@ namespace WPDataAccess\List_Table {
 						$msg->box();
 						?>
 						<script type="text/javascript">
-							jQuery(document).ready(function() {
+							jQuery(function() {
 								jQuery('#wpda_export_link').on('mouseup', function() {
 									// Hide link after click to prevent large exports being started more than ones
 									jQuery('#wpda_export_link').parent().parent().hide();
@@ -2171,46 +2171,44 @@ namespace WPDataAccess\List_Table {
 					jQuery('.wp-list-table').removeClass('fixed');
 				}
 
-				jQuery(document).ready(function () {
-					//jQuery("#doaction").off();
-					jQuery("#doaction").bind("click", function (e) {
+				jQuery(function () {
+					jQuery("#doaction").on("click", function (e) {
 						return wpda_check_bulk();
 					});
-					//jQuery("#doaction2").off();
-					jQuery("#doaction2").bind("click", function (e) {
+					jQuery("#doaction2").on("click", function (e) {
 						return wpda_check_bulk();
 					});
-					jQuery('#table_name-hide').bind("click", function (e) {
+					jQuery('#table_name-hide').on("click", function (e) {
 						show_hide_column(jQuery('#table_name-hide').is(":checked"));
 					});
-					jQuery('#table_type-hide').bind("click", function (e) {
+					jQuery('#table_type-hide').on("click", function (e) {
 						show_hide_column(jQuery('#table_type-hide').is(":checked"));
 					});
-					jQuery('#create_time-hide').bind("click", function (e) {
+					jQuery('#create_time-hide').on("click", function (e) {
 						show_hide_column(jQuery('#create_time-hide').is(":checked"));
 					});
-					jQuery('#table_rows-hide').bind("click", function (e) {
+					jQuery('#table_rows-hide').on("click", function (e) {
 						show_hide_column(jQuery('#table_rows-hide').is(":checked"));
 					});
-					jQuery('#auto_increment-hide').bind("click", function (e) {
+					jQuery('#auto_increment-hide').on("click", function (e) {
 						show_hide_column(jQuery('#auto_increment-hide').is(":checked"));
 					});
-					jQuery('#engine-hide').bind("click", function (e) {
+					jQuery('#engine-hide').on("click", function (e) {
 						show_hide_column(jQuery('#engine-hide').is(":checked"));
 					});
-					jQuery('#total_size-hide').bind("click", function (e) {
+					jQuery('#total_size-hide').on("click", function (e) {
 						show_hide_column(jQuery('#total_size-hide').is(":checked"));
 					});
-					jQuery('#data_size-hide').bind("click", function (e) {
+					jQuery('#data_size-hide').on("click", function (e) {
 						show_hide_column(jQuery('#data_size-hide').is(":checked"));
 					});
-					jQuery('#index_size-hide').bind("click", function (e) {
+					jQuery('#index_size-hide').on("click", function (e) {
 						show_hide_column(jQuery('#index_size-hide').is(":checked"));
 					});
-					jQuery('#overhead-hide').bind("click", function (e) {
+					jQuery('#overhead-hide').on("click", function (e) {
 						show_hide_column(jQuery('#overhead-hide').is(":checked"));
 					});
-					jQuery('#table_collation-hide').bind("click", function (e) {
+					jQuery('#table_collation-hide').on("click", function (e) {
 						show_hide_column(jQuery('#table_collation-hide').is(":checked"));
 					});
 				});
@@ -2296,7 +2294,7 @@ namespace WPDataAccess\List_Table {
 					if ( 0 < count( $this->favourites ) ) {
 						$where_or_and = '' === $this->where ? ' where ' : ' and ';
 						$in_or_not_in = 'show' === $this->wpda_main_favourites ? 'in' : 'not in';
-						$this->where  .= " $where_or_and table_name $in_or_not_in ('" . implode( $this->favourites, "','" ) . "') ";
+						$this->where  .= " $where_or_and table_name $in_or_not_in ('" . implode( "','", $this->favourites ) . "') ";
 					}
 				}
 			}
@@ -2329,7 +2327,7 @@ namespace WPDataAccess\List_Table {
 				<?php
 				$this->wpda_import->add_button();
 				?>
-				<a href="?page=wpda&page_action=wpda_import_csv&schema_name=<?php echo esc_attr( $this->schema_name ); ?>"
+				<a href="?page=wpda&page_action=wpda_import_csv"
 				   class="page-title-action wpda_tooltip"
 				   title="Upload, map and import CSV files"
 				><span class="material-icons wpda_icon_on_button">cloud_upload</span> <?php echo __( 'Import CSV' ); ?></a>
@@ -2628,17 +2626,17 @@ namespace WPDataAccess\List_Table {
 							ssl_path: ssl_path,
 							ssl_cipher: ssl_cipher
 						}
-					}).success(
+					}).done(
 						function (msg) {
 							jQuery('#' + mode + 'remote_database_block_test_content').html(msg);
 							jQuery('#' + mode + 'remote_database_block_test').show();
 						}
-					).error(
+					).fail(
 						function () {
 							jQuery('#' + mode + 'remote_database_block_test_content').html('Preparing connection...<br/>Establishing connection...<br/><br/><strong>Remote database connection invalid</strong>');
 							jQuery('#' + mode + 'remote_database_block_test').show();
 						}
-					).complete(
+					).always(
 						function () {
 							jQuery('#' + mode + 'remote_test_button').val('Test');
 							jQuery('#' + mode + 'remote_clear_button').show();
@@ -2646,7 +2644,7 @@ namespace WPDataAccess\List_Table {
 					);
 				}
 
-				jQuery(document).ready(function () {
+				jQuery(function () {
 					jQuery('#database_location').on('change', function () {
 						if (jQuery(this).val() === 'remote') {
 							jQuery('#local_database_block').hide();
@@ -2757,14 +2755,14 @@ namespace WPDataAccess\List_Table {
 				?>
 			</div>
 			<script type='text/javascript'>
-				jQuery(document).ready(function () {
-					jQuery("#wpda_main_db_schema_list").bind("change", function () {
+				jQuery(function () {
+					jQuery("#wpda_main_db_schema_list").on("change", function () {
 						jQuery("#wpda_main_db_schema").val(jQuery(this).val());
 						jQuery("#wpda_main_form :input[name='action']").val('-1');
 						jQuery("#wpda_main_form :input[name='action2']").val('-1');
 						jQuery("#wpda_main_form").submit();
 					});
-					jQuery("#wpda_main_favourites_list").bind("change", function () {
+					jQuery("#wpda_main_favourites_list").on("change", function () {
 						jQuery("#wpda_main_favourites").val(jQuery(this).val());
 						jQuery("#wpda_main_form :input[name='action']").val('-1');
 						jQuery("#wpda_main_form :input[name='action2']").val('-1');
@@ -2786,15 +2784,16 @@ namespace WPDataAccess\List_Table {
 			$cookie_name = $this->page . '_schema_name';
 
 			if ( isset( $_REQUEST['wpda_main_db_schema'] ) && '' !== $_REQUEST['wpda_main_db_schema'] ) {
-				return sanitize_text_field( wp_unslash( $_REQUEST['wpda_main_db_schema'] ) ); // input var okay.
+				if ( WPDA::schema_exists( sanitize_text_field( wp_unslash( $_REQUEST['wpda_main_db_schema'] ) ) ) ) {
+					return sanitize_text_field( wp_unslash( $_REQUEST['wpda_main_db_schema'] ) ); // input var okay.
+				}
 			} elseif ( isset( $_COOKIE[ $cookie_name ] ) ) {
 				if ( WPDA::schema_exists( $_COOKIE[ $cookie_name ] ) ) {
 					return $_COOKIE[ $cookie_name ];
 				}
 			}
 
-			global $wpdb;
-			return $wpdb->dbname;
+			return WPDA::get_user_default_scheme();
 		}
 
 		/**

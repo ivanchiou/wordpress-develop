@@ -142,6 +142,13 @@ namespace WPDataAccess\Simple_Form {
 		protected $hide_item;
 
 		/**
+		 * TRUE = item not shown on init, FALSE = item shown on init
+		 *
+		 * @var boolean
+		 */
+		protected $hide_item_init = false;
+
+		/**
 		 * TRUE = null values are allowed, FALSE = no null values allowed
 		 *
 		 * @var boolean
@@ -160,6 +167,12 @@ namespace WPDataAccess\Simple_Form {
 		 * @var boolean
 		 */
 		protected $is_key_column;
+
+		/**
+		 * TRUE = column is part of foreign key, FALSE = column is not part of foreign  key
+		 * @var boolean
+		 */
+		protected $is_foreign_key_column = false;
 
 		/**
 		 * Context variable to keep logic for showing items maintainable
@@ -342,6 +355,15 @@ namespace WPDataAccess\Simple_Form {
 		 * @param string $update_keys_allowed TRUE = allow key updates
 		 */
 		public function show( $action, $update_keys_allowed ) {
+			if ( $this->hide_item && ! $this->is_auto_increment && ! $this->is_foreign_key_column ) {
+				if ( 'new' === $action && '' !== $this->get_item_default_value() && null !== $this->get_item_default_value() ) {
+					// Add hidden item to apply default value
+				} else {
+					// Do not show item, do not add hidden item to form, user is not allowed to view this item
+					return;
+				}
+			}
+
 			// Set context variables
 			$this->show_context_action              = $action;
 			$this->show_context_update_keys_allowed = $update_keys_allowed;
@@ -354,7 +376,7 @@ namespace WPDataAccess\Simple_Form {
 				$row_class = '';
 			}
 
-			if ( true === $this->hide_item ) {
+			if ( true === $this->hide_item_init || true === $this->hide_item ) {
 				?>
 				<tr style='display:none'<?php echo ''===$row_class ? '' : ' class="' . esc_attr( $row_class ) . '"'; ?>>
 				<?php
@@ -489,11 +511,8 @@ namespace WPDataAccess\Simple_Form {
 					}
 					?>
 					<script type='text/javascript'>
-						if (<?php echo esc_attr( $number_precision ); ?> ===
-						0
-						)
-						{
-							jQuery('#<?php echo esc_attr( $this->item_name ); ?>').bind('keyup paste', function () {
+						if (<?php echo esc_attr( $number_precision ); ?> === 0) {
+							jQuery('#<?php echo esc_attr( $this->item_name ); ?>').on('keyup paste', function () {
 								this.value = this.value.replace(/[^\d\-]/g, ''); // Allow only 0-9 :: /[^\d]/g
 								if (isNaN(this.value)) {
 									jQuery(this).addClass('wpda_input_error');
@@ -502,7 +521,7 @@ namespace WPDataAccess\Simple_Form {
 								}
 							});
 						}
-						jQuery(document).ready(function () {
+						jQuery(function () {
 							jQuery('#<?php echo esc_attr( $this->item_name ); ?>').on('blur', function () {
 								if (Math.pow(10, <?php echo esc_attr( $number_length ); ?>) - 1 < this.value) {
 									jQuery(this).addClass('wpda_input_error');
@@ -717,7 +736,7 @@ namespace WPDataAccess\Simple_Form {
 		}
 
 		/**
-		 * Null values allowed?
+		 * Is column part of the primary key?
 		 *
 		 * @return boolean
 		 * @since   2.0.0
@@ -870,6 +889,31 @@ namespace WPDataAccess\Simple_Form {
 		public function set_is_key_column( $is_key_column ) {
 
 			$this->is_key_column = $is_key_column;
+
+		}
+
+		/**
+		 * Set item is foreign key column
+		 *
+		 * @param boolean $is_foreign_key_column TRUE|FALSE
+		 */
+		public function set_foreign_key_column( $is_foreign_key_column ) {
+
+			$this->is_foreign_key_column = $is_foreign_key_column;
+
+		}
+
+		/**
+		 * Set item visibility on initialization
+		 *
+		 * @param boolean $hide_item_init TRUE = hide item init
+		 *
+		 * @since   1.6.9
+		 *
+		 */
+		public function set_hide_item_init( $hide_item_init ) {
+
+			$this->hide_item_init = $hide_item_init;
 
 		}
 

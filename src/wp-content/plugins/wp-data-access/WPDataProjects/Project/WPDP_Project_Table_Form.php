@@ -351,7 +351,7 @@ namespace WPDataProjects\Project {
 			}
 			?>
 			<script type='text/javascript'>
-				jQuery(document).ready(function () {
+				jQuery(function () {
 					jQuery('#wpda_table_structure').sortable();
 					jQuery('#wpda_list_table_options').sortable();
 					jQuery('#wpda_form_options').sortable();
@@ -363,7 +363,7 @@ namespace WPDataProjects\Project {
 				// Set all forms to read only
 				?>
 				<script type='text/javascript'>
-					jQuery(document).ready(function () {
+					jQuery(function () {
 						jQuery("input").attr("disabled", true);
 						jQuery("select").attr("disabled", true);
 					});

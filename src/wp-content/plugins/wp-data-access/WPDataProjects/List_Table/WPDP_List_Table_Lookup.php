@@ -274,6 +274,17 @@ namespace WPDataProjects\List_Table {
 
 			if ( $perform_default_method ) {
 				parent::construct_where_clause();
+			} else {
+				$whereclause = $this->get_where_clause();
+
+				if ( '' === $this->where ) {
+					$this->where = " where {$whereclause} ";
+				}
+
+				if ( ' (1=2) ' !== $whereclause ) {
+					// TODO Add other (non lookup) columns
+					// $this->where .= " and {$whereclause} "; // Needs to be tested
+				}
 			}
 		}
 
@@ -283,7 +294,7 @@ namespace WPDataProjects\List_Table {
 			if ( '' === $orderby && null !== $this->orderby && '' !== trim( $this->orderby ) ) {
 				$orderby =
 					' order by ' .
-					str_replace( '-', '', str_replace( 'order', '', str_replace( 'by', '', $this->orderby ) ) );
+					trim( str_replace( 'order by ', '', $this->orderby ) );
 			}
 
 			return $orderby;

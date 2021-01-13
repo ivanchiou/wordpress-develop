@@ -41,7 +41,7 @@ namespace WPDataAccess\CSV_Files {
 
 			?>
 			<script type="text/javascript">
-				jQuery(document).ready(function() {
+				jQuery(function() {
 					jQuery('#wpda_main_form').append('<input type="hidden" name="page_action" value="wpda_import_csv">');
 				});
 			</script>
@@ -52,8 +52,7 @@ namespace WPDataAccess\CSV_Files {
 			// Add page_action to delete form
 			?>
 			<script type='text/javascript'>
-				jQuery("#delete_form_" + <?php echo( self::$list_number - 1 ) ?>).append('<input type="hidden" name="page_action" value="wpda_import_csv">');
-				jQuery("#delete_form_" + <?php echo( self::$list_number - 1 ) ?>).append('<input type="hidden" name="schema_name" value="<?php echo esc_attr( $this->schema_name ); ?>">');
+				jQuery("#delete_form_" + <?php echo( self::$list_number - 1 ) ?>).attr('action', '?page=<?php echo esc_attr( $this->page ); ?>&page_action=wpda_import_csv');
 			</script>
 			<?php
 			// Add mapping form to actions
@@ -63,7 +62,7 @@ namespace WPDataAccess\CSV_Files {
 			$mapping_form    =
 				"<form" .
 				" id='mapping_form$form_id'" .
-				" action='?page=" . esc_attr( $this->page ) . "&page_action=wpda_import_csv&schema_name=" . esc_attr( $this->schema_name ) . "'" .
+				" action='?page=" . esc_attr( $this->page ) . "&page_action=wpda_import_csv'" .
 				" method='post'>" .
 				"<input type='hidden' name='action' value='mapping' />" .
 				"<input type='hidden' name='csv_id' value='{$item['csv_id']}' />" .
@@ -87,7 +86,7 @@ namespace WPDataAccess\CSV_Files {
 			$import_form    =
 				"<form" .
 				" id='import_form$form_id'" .
-				" action='?page=" . esc_attr( $this->page ) . "&page_action=wpda_import_csv&schema_name=" . esc_attr( $this->schema_name ) . "'" .
+				" action='?page=" . esc_attr( $this->page ) . "&page_action=wpda_import_csv'" .
 				" method='post'>" .
 				"<input type='hidden' name='action' value='import' />" .
 				"<input type='hidden' name='csv_id' value='{$item['csv_id']}' />" .
@@ -112,7 +111,7 @@ namespace WPDataAccess\CSV_Files {
 			$reload_form    =
 				"<form" .
 				" id='reload_form$form_id'" .
-				" action='?page=" . esc_attr( $this->page ) . "&page_action=wpda_import_csv&schema_name=" . esc_attr( $this->schema_name ) . "'" .
+				" action='?page=" . esc_attr( $this->page ) . "&page_action=wpda_import_csv'" .
 				" method='post'>" .
 				"<input type='hidden' name='action' value='reload' />" .
 				"<input type='hidden' name='csv_id' value='{$item['csv_id']}' />" .

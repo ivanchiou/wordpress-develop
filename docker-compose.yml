@@ -59,12 +59,12 @@ services:
       - wpdevnet
 
     ports:
-      - "3306:3306"
+      - "3005:3306"
 
     environment:
-      MYSQL_ROOT_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: Bir^(L4!mdFNORBO6SaEeMF
       MYSQL_USER: root
-      MYSQL_PASSWORD: password
+      MYSQL_PASSWORD: Bir^(L4!mdFNORBO6SaEeMF
       MYSQL_DATABASE: mysql      
 
     volumes:
@@ -138,7 +138,7 @@ services:
       MYSQL_PORT_3306_TCP_ADDR: localhost
       PMA_HOST: mysql
       PMA_USERNAME: root
-      PMA_PASSWORD: password
+      PMA_PASSWORD: Bir^(L4!mdFNORBO6SaEeMF
     networks:
       - wpdevnet      
 

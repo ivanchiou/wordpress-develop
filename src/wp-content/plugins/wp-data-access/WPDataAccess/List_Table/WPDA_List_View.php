@@ -972,7 +972,7 @@ namespace WPDataAccess\List_Table {
 						jQuery('#'+jQuery(item).attr('name')+'-setting').val('HIDE');
 					}
 				}
-				jQuery(document).ready(function () {
+				jQuery(function () {
 					// Switch fieldset: columns first = WordPress default
 					jQuery("#adv-settings fieldset:first").insertAfter(jQuery("#adv-settings fieldset:last"));
 				});

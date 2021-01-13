@@ -7,15 +7,40 @@
 + When you perform a reconcile, your lookup database/table combinations are messed up (Amy)
 + After adding new parent the child tab is not directly shown (Sebastian)
 + Apache modsecurity blocks plugin (Andrea)
-+ Update implode: use array as first argument, glue as second (deprecated message in 7.4) (Kooyaya)
+  + Change argument schema_name to wpdaarg_schema_name
 + Hyperlinks Behaviour – Unexpected behaviour in Data Projects (https://wordpress.org/support/topic/hyperlinks-behaviour-unexpected-behaviour-in-data-projects/)
++ Fix Data Backups
++ Shortcode wpdadiehard returns error in visual editor when saved with non existing project/page id
 
 *** WORK IN PROGRESS ***
 
-+ Show only selected tables in Data Publisher for non admin users
-+ Clear all search items (Charles)
++ Documentation
+  + Default database schema per user
+  + Filter option Data Projects
+  + Video tutorial Data Forms
+  + Video tutorial add Export buttons to publication
 
-+ New Data Publisher video
++ Customers
+  + https://www.jmteagueengineering.com/work-zone-safety-db/
+
++ Make child items read only in view mode - works only for parent
++ Allow to add (1:n | n:m) relationships over multiple databases (Jeremy Gadd)
++ Data designer: Data type text should not allow a max length (Nicola)
++ Can I improve the layout of my static hyperlink? (Barbara)
++ Make column name available in Data Publisher - for example function fnRowCallback (Cory - https://wpdataaccess.com/docs/documentation/plugin-settings/plugin/#comment-473)
++ Relationships to other databases ???
+
++ Data Forms
+  + Relationship n:m > add existing
+  + Relationship n:m > add lookup with multiple columns
+  + Multi column lookup
+  + Lookup to other database ???
+
+---
+
++ Show only selected tables in Data Publisher for non admin users
++ Add column renderer code to WP Data Access website (Advanced)
+
 + Add premium videos
   + Advanced search (multiple)
   + Inline editing
@@ -25,20 +50,19 @@
   + Data Projects
     + Adding filters
     + Adding inline editing
-+ Add column renderer code to WP Data Access website
 
 + Improve demos (show possibilities - premium + code manager)
 + Offer apps (FAQ, SAS, BAS)
 
-+ Add support for computed columns
-+ Add premium forms builder (callable from datagrid, inline forms)
++ Add support for computed columns (allow to use videos/images in slider/carousel from multiple media columns)
++ Add premium forms builder (dataforms, inline forms?)
 + Add premium report builder (list + single row display, both responsive)
 
 + Update documentation
 + Update readme (add premium features)
 + Update screenshots
-+ Create new Data Publisher tutorial: quick start
 
++ Add media library to front-end (Nick)
 + Add logging to csv import
 + Built layer around wpdb class to limit dcl, ddl and some dml access to admin users only
 + Load attachment in TEXT column to allow full-text indexing

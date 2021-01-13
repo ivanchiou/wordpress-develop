@@ -1,13 +1,37 @@
 ### ChangeLog for WP Data Access
 
-#### 3.6.6 / --- under development ---
+#### 4.0.1 / 2020-12-04
 
-Fixed: Column headers not visible in export (Charles)
-Fixed: Broken link (what's new)
-Fixed: Column values in dynamic hyperlinks are not substituted in publication if the column is not selected (Charles)
-Fixed: Dates not correctly imported from csv if not matching the exact format (Erwin)
+Fixed: Copy shortcode wpdataaccess returning wrong shortcode  
+
+#### 4.0.0 / 2020-12-03
+
+Update: jQuery and jQuery UI to prepare for WordPress 5.6 and 5.7
+Update: Implode usage - deprecated message in 7.4 (Kooyaya)
+Added: Define default database per user (Charles)
+Changed: Improved remote database error handling
+Updated: jQuery DataTables responsive library and style
+Updated: jQuery UI darksness theme (used in data entry forms)
+Added: Allow users to map CSV to tables in other (remote) databases (Charles)
+Fixed: Default order by desc on child table not working (Jim)
+Fixed: Search returns no result when criteria contains a quote (wwdz + Charles)
+Fixed: Default order by for child table does not allow to reorder on other columns (Robert)
+Updated: Readme
+Updated: Freemius library
+Fixed: Order by clause not working when column name starts with "order" (Nanne)
+Added: Data Forms (beta)
+
+Patched: Column headers not visible in export (Charles)
+Patched: Broken link (what's new)
+Patched: Column values in dynamic hyperlinks are not substituted in publication if the column is not selected (Charles)
+Patched: Dates not correctly imported from csv if not matching the exact format (Erwin)
 
 #### 3.6.5 / 2020-10-14
+
+Patched: Column headers not visible in export (Charles)
+Patched: Broken link (what's new)
+Patched: Column values in dynamic hyperlinks are not substituted in publication if the column is not selected (Charles)
+Patched: Dates not correctly imported from csv if not matching the exact format (Erwin)
 
 Added: Parameters wpda_search_placeholder_prefix and wpda_search_placeholder to format search box (Charles)
 Added: Row level access control (Fedi)

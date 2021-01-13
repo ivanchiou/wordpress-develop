@@ -10,6 +10,7 @@ namespace WPDataAccess {
 
 	use WP_Data_Access_Admin;
 	use WPDataAccess\Connection\WPDADB;
+	use WPDataAccess\Utilities\WPDA_Message_Box;
 	use WPDataProjects\WPDP;
 
 	/**
@@ -42,7 +43,7 @@ namespace WPDataAccess {
 		/**
 		 * Option wpda_version and it's default value
 		 */
-		const OPTION_WPDA_VERSION = [ 'wpda_version', '3.6.5' ];
+		const OPTION_WPDA_VERSION = [ 'wpda_version', '4.0.1' ];
 		/**
 		 * Option wpda_setup_error and it's default value
 		 */
@@ -88,6 +89,9 @@ namespace WPDataAccess {
 		const OPTION_PLUGIN_WPDATAACCESS_PAGE = [ 'wpda_plugin_wpdataaccess_page', 'on' ];
 		const OPTION_PLUGIN_WPDADIEHARD_POST  = [ 'wpda_plugin_wpdadiehard_post', 'on' ];
 		const OPTION_PLUGIN_WPDADIEHARD_PAGE  = [ 'wpda_plugin_wpdadiehard_page', 'on' ];
+		const OPTION_PLUGIN_WPDADATAFORMS_POST = [ 'wpda_plugin_wpdadataforms_post', 'off' ];
+		const OPTION_PLUGIN_WPDADATAFORMS_PAGE = [ 'wpda_plugin_wpdadataforms_page', 'off' ];
+		const OPTION_PLUGIN_WPDADATAFORMS_ALLOW_ANONYMOUS_ACCESS = [ 'wpda_plugin_wpdadataforms_allow_anonymous_access', 'off' ];
 
 		// MySQL date and time formats
 		const DB_DATE_FORMAT     = 'Y-m-d';
@@ -252,6 +256,8 @@ namespace WPDataAccess {
 		// Prefixes to store frontend access for non WP databases
 		const FRONTEND_OPTIONNAME_DATABASE_ACCESS   = 'WPDA_FE_TABLE_ACCESS_';
 		const FRONTEND_OPTIONNAME_DATABASE_SELECTED = 'WPDA_FE_TABLE_SELECTED_';
+
+		const WPDA_DT_UI_THEME_DEFAULT   = [ 'wpda_dt_ui_theme_default', 'smoothness' ];
 
 		/**
 		 * List of plugin tables
@@ -837,7 +843,7 @@ namespace WPDataAccess {
 
 			foreach ( $columns as $column ) {
 				if ( 'string' === WPDA::get_type( $column['data_type'] ) ) {
-					$where_columns[] = $wpdb->prepare( "`{$column['column_name']}` like '%s'", '%' . esc_attr( $search ) . '%' ); // WPCS: unprepared SQL OK.
+					$where_columns[] = $wpdb->prepare( "`{$column['column_name']}` like '%s'", '%' . esc_sql( $search ) . '%' ); // WPCS: unprepared SQL OK.
 				}
 			}
 
@@ -864,9 +870,9 @@ namespace WPDataAccess {
 						$column_value     = sanitize_text_field( wp_unslash( $_REQUEST["wpda_search_column_{$column_name}"] ) ); // input var okay.
 						if ( '' !== $column_value ) {
 							if ( 'string' === WPDA::get_type( $column_date_type ) ) {
-								$where_columns[] = $wpdb->prepare( "`{$column_name}` like '%s'", esc_attr( $column_value ) ); // WPCS: unprepared SQL OK.
+								$where_columns[] = $wpdb->prepare( "`{$column_name}` like '%s'", esc_sql( $column_value ) ); // WPCS: unprepared SQL OK.
 							} elseif ( 'number' === WPDA::get_type( $column_date_type ) ) {
-								$where_columns[] = $wpdb->prepare( "`{$column_name}` = '%d'", esc_attr( $column_value ) ); // WPCS: unprepared SQL OK.
+								$where_columns[] = $wpdb->prepare( "`{$column_name}` = '%d'", esc_sql( $column_value ) ); // WPCS: unprepared SQL OK.
 							}
 						}
 					}
@@ -894,7 +900,23 @@ namespace WPDataAccess {
 					return false;
 				}
 			}
+
 			$wpdadb = WPDADB::get_db_connection( $schema_name );
+			if ( method_exists( $wpdadb, 'is_connected' ) ) {
+				if ( ! $wpdadb->is_connected() ) {
+					$msg = new WPDA_Message_Box(
+						[
+							'message_text'           => __( "Remote database '{$schema_name}' not available [check connection: Settings > WP Data Access]", 'wp-data-access' ),
+							'message_type'           => 'error',
+							'message_is_dismissible' => false,
+						]
+					);
+					$msg->box();
+
+					return false;
+				}
+			}
+
 			$wpdadb->query(
 				$wpdadb->prepare( '
 							SELECT TRUE FROM information_schema.schemata WHERE schema_name = %s
@@ -907,6 +929,50 @@ namespace WPDataAccess {
 			$wpdadb->get_results(); // WPCS: unprepared SQL OK; db call ok; no-cache ok.
 
 			return 1 === $wpdadb->num_rows;
+		}
+
+		public static function get_user_default_scheme() {
+			$default_databases = get_option('wpda_default_database');
+			if ( false !== $default_databases ) {
+				$user_id = get_current_user_id();
+				if (
+					$user_id > 0 &&
+					isset( $default_databases[ $user_id ] ) &&
+					self::schema_exists( $default_databases[ $user_id ] )
+				) {
+					return $default_databases[ $user_id ];
+				}
+			}
+
+			global $wpdb;
+			return $wpdb->dbname;
+		}
+
+		public static function shortcode_popup() {
+			?>
+			<script type="text/javascript">
+				jQuery(function() {
+					var clipboard = new ClipboardJS('.wpda_shortcode_clipboard');
+				});
+			</script>
+			<style type="text/css">
+                .wpda_shortcode_text {
+                    text-align: center;
+                    font-size: 105%;
+					white-space: nowrap;
+                }
+                .wpda_shortcode_buttons {
+                    text-align: center;
+                }
+                .button.wpda_shortcode_button {
+                    width: 100px !important;
+                }
+				.wpda_shortcode_link {
+					text-decoration: none;
+					font-weight: bold;
+				}
+			</style>
+			<?php
 		}
 
 	}

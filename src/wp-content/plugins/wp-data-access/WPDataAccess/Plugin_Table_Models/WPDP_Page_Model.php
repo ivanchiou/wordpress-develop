@@ -32,6 +32,54 @@ namespace WPDataAccess\Plugin_Table_Models {
 			return $wpdb->prefix . static::BASE_TABLE_NAME;
 		}
 
+		/**
+		 * Get project page
+		 *
+		 * @param $project_id
+		 * @param $page_id
+		 *
+		 * @return mixed
+		 */
+		public static function get_page( $project_id, $page_id ) {
+			static::check_base_table_name();
+
+			global $wpdb;
+			$query =
+				$wpdb->prepare(
+					'select * from ' . static::get_base_table_name() .
+					' where project_id = %d and page_id = %d',
+					[
+						$project_id,
+						$page_id,
+					]
+				);
+
+			return $wpdb->get_results( $query, 'ARRAY_A' ); // WPCS: unprepared SQL OK; db call ok; no-cache ok.
+		}
+
+		/**
+		 * Get project page
+		 *
+		 * @param $page_id
+		 *
+		 * @return mixed
+		 */
+		public static function get_page_from_page_id( $page_id ) {
+			static::check_base_table_name();
+
+			global $wpdb;
+			$query =
+				$wpdb->prepare(
+					'select * from ' . static::get_base_table_name() .
+					' where page_id = %d',
+					[
+						$page_id,
+					]
+				);
+
+			return $wpdb->get_results( $query, 'ARRAY_A' ); // WPCS: unprepared SQL OK; db call ok; no-cache ok.
+		}
+
 	}
 
 }

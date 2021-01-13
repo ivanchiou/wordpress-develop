@@ -218,16 +218,6 @@ namespace WPDataProjects\Parent_Child {
 				$default_where = '';
 			}
 
-			if (
-				isset( $this->child['default_orderby'] ) &&
-				null !== $this->child['default_orderby'] &&
-				'' !== trim( $this->child['default_orderby'] )
-			) {
-				$default_orderby = " order by {$this->child['default_orderby']} ";
-			} else {
-				$default_orderby = '';
-			}
-
 			if ( isset( $this->child['relation_nm'] ) ) {
 				$child_table        = $this->child['relation_nm']['child_table'];
 				$parent_key         = $this->child['relation_nm']['parent_key'];
@@ -346,9 +336,26 @@ namespace WPDataProjects\Parent_Child {
 			$this->where .= $default_where;
 
 			parent::construct_where_clause();
+		}
+
+		protected function get_order_by() {
+			$orderby = parent::get_order_by();
+			if ( '' !== $orderby ) {
+				return $orderby;
+			}
+
+			if (
+				isset( $this->child['default_orderby'] ) &&
+				null !== $this->child['default_orderby'] &&
+				'' !== trim( $this->child['default_orderby'] )
+			) {
+				$default_orderby = " order by {$this->child['default_orderby']} ";
+			} else {
+				$default_orderby = '';
+			}
 
 			// Add default order by
-			$this->where .= $default_orderby; // WPCS: unprepared SQL OK.
+			return $default_orderby; // WPCS: unprepared SQL OK.
 		}
 
 		/**

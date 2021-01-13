@@ -299,7 +299,7 @@ namespace WPDataAccess\Utilities {
 				</div>
 				<div style="height:0;padding:0;margin:0;"></div>
 				<script type='text/javascript'>
-					jQuery(document).ready(function () {
+					jQuery(function () {
 						var sql_to_clipboard = new ClipboardJS("#button-copy-clipboard-<?php echo esc_attr( $this->rownum ); ?>");
 						sql_to_clipboard.on('success', function (e) {
 							jQuery.notify('<?php echo __( 'SQL successfully copied to clipboard!', 'wp-data-access' ); ?>','info');
@@ -1092,9 +1092,9 @@ Variable $$column_name$$ will be replaced with the value of column $$column_name
 				</tr>
 			</table>
 			<script type='text/javascript'>
-				jQuery(document).ready(function () {
+				jQuery(function () {
 					// Menu actions
-					jQuery('.wpda_table_settings_caret').unbind("click");
+					jQuery('.wpda_table_settings_caret').off("click");
 					jQuery('.wpda_table_settings_caret').on('click', function () {
 						if (jQuery(this).hasClass('wpda_table_settings_caret_down')) {
 							jQuery(this).parent().find('.wpda_table_settings_nested').toggle();

@@ -1238,7 +1238,7 @@ namespace WPDataAccess\Design_Table {
 						jQuery("#columns_selected option[value='']").remove();
 					}
 
-					jQuery('select#columns_selected option').removeAttr("selected");
+					jQuery('select#columns_selected option').prop("selected", false);
 
 				}
 
@@ -1259,7 +1259,7 @@ namespace WPDataAccess\Design_Table {
 						jQuery("#columns_selected").append(jQuery('<option></option>').attr('value', '').text(no_cols_selected));
 					}
 
-					jQuery('select#columns_available option').removeAttr("selected");
+					jQuery('select#columns_available option').prop("selected", false);
 				}
 
 				function show_index_dialog(e) {
@@ -1289,12 +1289,15 @@ namespace WPDataAccess\Design_Table {
 					);
 
 					var dialog_table = jQuery('<table style="width:410px"></table>');
+					var dialog_table_row = dialog_table.append(jQuery('<tr></tr>'));
+					dialog_table_row.append(jQuery('<td width="50%"></td>').append(columns_available));
+					dialog_table_row.append(jQuery('<td width="50%"></td>').append(columns_selected));
 
-					var dialog_table_row_available = dialog_table.append(jQuery('<tr></tr>').append(jQuery('<td width="50%"></td>')));
-					dialog_table_row_available.append(columns_available);
-
-					var dialog_table_row_selected = dialog_table.append(jQuery('<tr></tr>').append(jQuery('<td width="50%"></td>')));
-					dialog_table_row_selected.append(columns_selected);
+					// var dialog_table_row_available = dialog_table.append(jQuery('<tr></tr>').append(jQuery('<td width="50%"></td>')));
+					// dialog_table_row_available.append(columns_available);
+					//
+					// var dialog_table_row_selected = dialog_table.append(jQuery('<tr></tr>').append(jQuery('<td width="50%"></td>')));
+					// dialog_table_row_selected.append(columns_selected);
 
 					var dialog_text = jQuery('<div style="width:410px"></div>');
 					var dialog = jQuery('<div></div>');
@@ -1582,7 +1585,7 @@ namespace WPDataAccess\Design_Table {
 					</div>
 				</div>
 				<script type='text/javascript'>
-					jQuery(document).ready(function () {
+					jQuery(function () {
 						<?php if ( 'show_create_table_script' === $this->action2_posted || 'show_alter_table_script' === $this->action2_posted ) { ?>
 						jQuery('#overlay_show_create_table').show();
 						<?php } ?>
@@ -1613,7 +1616,7 @@ namespace WPDataAccess\Design_Table {
 									foreach ( $this->databases as $database ) {
 										if ( null === $this->wpda_schema_name ) {
 											global $wpdb;
-											$dbs = $wpdb->dbname;
+											$dbs = WPDA::get_user_default_scheme();
 										} else {
 											$dbs = $this->wpda_schema_name;
 										}
@@ -1718,7 +1721,7 @@ namespace WPDataAccess\Design_Table {
 									foreach ( $this->databases as $database ) {
 										if ( null === $this->wpda_schema_name ) {
 											global $wpdb;
-											$dbs = $wpdb->dbname;
+											$dbs = WPDA::get_user_default_scheme();
 										} else {
 											$dbs = $this->wpda_schema_name;
 										}

@@ -531,7 +531,7 @@ namespace WPDataAccess\List_Table {
 				$this->hide_navigation = $args['hide_navigation'];
 			}
 
-			$this->search_value = $this->get_search_value();
+			$this->search_value = str_replace( "\'", "", $this->get_search_value() );
 			if ( isset( $_REQUEST["{$this->search_item_name}_old_value"] ) ) {
 				$this->search_value_old = sanitize_text_field( wp_unslash( $_REQUEST["{$this->search_item_name}_old_value"] ) ); // input var okay.
 			} else {
@@ -1495,10 +1495,8 @@ namespace WPDataAccess\List_Table {
 				</form>
 			</div>
 			<script type='text/javascript'>
-				jQuery(document).ready(function() {
-					jQuery(document).ready(function(){
-						jQuery( '.wpda_tooltip' ).tooltip();
-					});
+				jQuery(function() {
+					jQuery( '.wpda_tooltip' ).tooltip();
 				});
 			</script>
 			<?php $this->bind_action_buttons(); ?>
@@ -1516,7 +1514,7 @@ namespace WPDataAccess\List_Table {
 		protected function bind_action_buttons() {
 			?>
 			<script type='text/javascript'>
-				jQuery(document).ready(function () {
+				jQuery(function () {
 					jQuery("#doaction").click(function () {
 						return wpda_action_button();
 					});
@@ -1989,7 +1987,7 @@ namespace WPDataAccess\List_Table {
 					$msg->box();
 					?>
 					<script type="text/javascript">
-						jQuery(document).ready(function() {
+						jQuery(function() {
 							jQuery('#wpda_export_link').on('mouseup', function() {
 								// Hide link after click to prevent large exports being started more than ones
 								jQuery('#wpda_export_link').parent().parent().hide();

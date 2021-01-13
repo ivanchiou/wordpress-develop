@@ -119,7 +119,7 @@ namespace WPDataAccess\Simple_Form {
 			</span>
 
 			<script type='text/javascript'>
-				jQuery(document).ready(function () {
+				jQuery(function () {
 					jQuery('#<?php echo esc_attr( $this->item_name ); ?>_textlink').on('click', function () {
 						jQuery('#<?php echo esc_attr( $this->item_name ); ?>_hyperlink').toggle();
 					});

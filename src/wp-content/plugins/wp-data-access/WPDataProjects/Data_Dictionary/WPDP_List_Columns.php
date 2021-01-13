@@ -44,6 +44,8 @@ namespace WPDataProjects\Data_Dictionary {
 		 */
 		protected $column_options = null;
 
+		protected $parent_columns = null;
+
 		/**
 		 * WPDP_List_Columns constructor.
 		 *
@@ -84,7 +86,7 @@ namespace WPDataProjects\Data_Dictionary {
 		 * @return string Column label
 		 */
 		public function get_column_label( $column_name ) {
-			if ( null !== $this->column_options ) {
+			if ( null !== $this->column_options && isset( $this->table_column_headers[ $column_name ] ) ) {
 				return $this->table_column_headers[ $column_name ];
 			} else {
 				return parent::get_column_label( $column_name );
@@ -100,6 +102,10 @@ namespace WPDataProjects\Data_Dictionary {
 			return $this->setname;
 		}
 
+		public function get_all_columns() {
+			return $this->parent_columns;
+		}
+
 		/**
 		 * Set table columns (overwrites default method)
 		 *
@@ -107,6 +113,9 @@ namespace WPDataProjects\Data_Dictionary {
 		 */
 		protected function set_table_columns() {
 			parent::set_table_columns();
+
+			// Save (all) columns
+			$this->parent_columns = $this->get_table_columns();
 
 			// Reorder table columns according to sequence defined by user.
 			$table_columns_sorted = [];

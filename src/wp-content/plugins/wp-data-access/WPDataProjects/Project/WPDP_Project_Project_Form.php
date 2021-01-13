@@ -161,7 +161,7 @@ namespace WPDataProjects\Project {
 					<a href="javascript:void(0);" onclick="jQuery('#overlay_project').show()" class="button">DEBUG</a>
 				</div>
 				<script type='text/javascript'>
-					jQuery(document).ready(function () {
+					jQuery(function () {
 						var sql_to_clipboard = new ClipboardJS('#button-copy-clipboard');
 						sql_to_clipboard.on('success', function (e) {
 							jQuery.notify('<?php echo __( 'Info copied to clipboard!', 'wp-data-access'); ?>','info');
@@ -179,7 +179,7 @@ namespace WPDataProjects\Project {
 			if ( 'new' !== $this->action_posted || $this->child_request ) {
 				?>
 				<script type='text/javascript'>
-					jQuery(document).ready(function () {
+					jQuery(function () {
 						jQuery('#show_more_less_button').show();
 					});
 				</script>

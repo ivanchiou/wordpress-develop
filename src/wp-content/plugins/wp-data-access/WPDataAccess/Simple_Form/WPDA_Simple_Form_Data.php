@@ -225,8 +225,13 @@ namespace WPDataAccess\Simple_Form {
 					foreach ( $this->wpda_list_columns->get_table_primary_key() as $key ) {
 						$keys .= "-{$key}-" . $this->calling_form->get_new_value( $key );
 					}
+					// Check action from list table
 					if ( ! wp_verify_nonce( $wp_nonce, "wpda-row-level-security-{$this->table_name}{$keys}" ) ) {
-						wp_die( __( 'ERROR: Not authorized', 'wp-data-access' ) );
+						// Check action from data entry form (standard behaviour)
+						$wp_nonce = isset( $_REQUEST['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['_wpnonce'] ) ) : ''; // input var okay.
+						if ( ! wp_verify_nonce( $wp_nonce,$this->calling_form->get_nonce_action() ) ) {
+							wp_die( __( 'ERROR: Not authorized', 'wp-data-access' ) );
+						}
 					}
 				}
 			}

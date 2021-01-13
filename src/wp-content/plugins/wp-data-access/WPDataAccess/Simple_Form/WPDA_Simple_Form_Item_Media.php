@@ -196,7 +196,7 @@ namespace WPDataAccess\Simple_Form {
 					);
 				}
 
-				jQuery(document).ready(function () {
+				jQuery(function () {
 					jQuery('#<?php echo esc_attr( $this->item_name ); ?>_upload_button').on('click', function () {
 						if (frame_<?php echo esc_attr( $this->item_name ); ?>) {
 							set_selection_<?php echo esc_attr( $this->item_name ); ?>();

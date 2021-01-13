@@ -8,12 +8,12 @@
  *
  * @package WordPress
  * @subpackage Twenty_Twenty_One
- * @since 1.0.0
+ * @since Twenty Twenty-One 1.0
  */
 
 ?>
 			</main><!-- #main -->
-		</section><!-- #primary -->
+		</div><!-- #primary -->
 	</div><!-- #content -->
 
 	<?php get_template_part( 'template-parts/footer/footer-widgets' ); ?>
@@ -57,8 +57,8 @@
 				<?php
 				printf(
 					/* translators: %s: WordPress. */
-					esc_html__( 'Proudly powered by %s.', 'twentytwentyone' ),
-					'<a href="' . esc_attr__( 'https://wordpress.org/', 'twentytwentyone' ) . '">WordPress</a>'
+					esc_html__( '%s.', 'twentytwentyone' ),
+					'<a style="text-decoration: none;" href="' . esc_attr__( 'https://www.foreign.gov.kn/', 'twentytwentyone' ) . '">© Copyright 2021 Developed by Ministry of Foreign Affairs and Aviation</a>'
 				);
 				?>
 			</div><!-- .powered-by -->

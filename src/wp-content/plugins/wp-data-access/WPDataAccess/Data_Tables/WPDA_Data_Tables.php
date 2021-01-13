@@ -280,7 +280,7 @@ class WPDA_Data_Tables
         } catch ( \Exception $e ) {
             $json = null;
         }
-        return "<table id=\"" . esc_attr( $table_name ) . "{$pub_id}\" class=\"display\" cellspacing=\"0\">" . "<thead>" . $this->show_header(
+        return $wpda_wpdataaccess_prepare_filter . "<table id=\"" . esc_attr( $table_name ) . "{$pub_id}\" style=\"display:none\" class=\"display\" cellspacing=\"0\">" . "<thead>" . $this->show_header(
             $columns,
             $responsive,
             $responsive_cols,
@@ -296,7 +296,7 @@ class WPDA_Data_Tables
             $hyperlinks,
             $buttons,
             ''
-        ) . "</tfoot>" . "</table>" . "<script type='text/javascript'>" . "var datatables_i18n_url = '" . plugins_url( '../assets/i18n/', __DIR__ ) . "';" . "var {$columnsvar} = [" . $wpda_database_columns . "];" . "jQuery(document).ready(function () {" . "\twpda_datatables_ajax_call(" . "\t\t" . $columnsvar . "," . "\t\t\"" . esc_attr( $database ) . "\"," . "\t\t\"" . esc_attr( $table_name ) . "\"," . "\t\t\"" . esc_attr( $column_names ) . "\"," . "\t\t\"" . esc_attr( $responsive ) . "\"," . "\t\t\"" . esc_attr( $responsive_popup_title ) . "\"," . "\t\t\"" . esc_attr( $responsive_type ) . "\"," . "\t\t\"" . esc_attr( $responsive_icon ) . "\"," . "\t\t\"" . esc_attr( $pub_format ) . "\"," . "\t\t\"" . esc_attr( $language ) . "\"," . "\t\t\"" . htmlentities( $sql_orderby ) . "\"," . "\t\t" . $pub_table_options_searching . "," . "\t    " . $pub_table_options_ordering . "," . "\t\t" . $pub_table_options_paging . "," . "\t\t\"" . esc_attr( $pub_table_options_advanced ) . "\"," . "\t\t" . $pub_id . "," . "\t\t\"" . esc_attr( $pub_responsive_modal_hyperlinks ) . "\"," . "\t\t[" . implode( ',', $hyperlink_positions ) . "]," . "\t\t\"" . esc_attr( $filter_field_name ) . "\"," . "\t\t\"" . esc_attr( $filter_field_value ) . "\"," . "\t\t\"" . esc_attr( $nl2br ) . "\"," . "\t\t" . $buttons . "" . "\t);" . "});" . "</script>";
+        ) . "</tfoot>" . "</table>" . "<script type='text/javascript'>" . "var datatables_i18n_url = '" . plugins_url( '../assets/i18n/', __DIR__ ) . "';" . "var {$columnsvar} = [" . $wpda_database_columns . "];" . "jQuery(function () {" . "\twpda_datatables_ajax_call(" . "\t\t" . $columnsvar . "," . "\t\t\"" . esc_attr( $database ) . "\"," . "\t\t\"" . esc_attr( $table_name ) . "\"," . "\t\t\"" . esc_attr( $column_names ) . "\"," . "\t\t\"" . esc_attr( $responsive ) . "\"," . "\t\t\"" . esc_attr( $responsive_popup_title ) . "\"," . "\t\t\"" . esc_attr( $responsive_type ) . "\"," . "\t\t\"" . esc_attr( $responsive_icon ) . "\"," . "\t\t\"" . esc_attr( $pub_format ) . "\"," . "\t\t\"" . esc_attr( $language ) . "\"," . "\t\t\"" . htmlentities( $sql_orderby ) . "\"," . "\t\t" . $pub_table_options_searching . "," . "\t    " . $pub_table_options_ordering . "," . "\t\t" . $pub_table_options_paging . "," . "\t\t\"" . esc_attr( $pub_table_options_advanced ) . "\"," . "\t\t" . $pub_id . "," . "\t\t\"" . esc_attr( $pub_responsive_modal_hyperlinks ) . "\"," . "\t\t[" . implode( ',', $hyperlink_positions ) . "]," . "\t\t\"" . esc_attr( $filter_field_name ) . "\"," . "\t\t\"" . esc_attr( $filter_field_value ) . "\"," . "\t\t\"" . esc_attr( $nl2br ) . "\"," . "\t\t" . $buttons . "" . "\t);" . "});" . "</script>";
     }
     
     /**
@@ -395,6 +395,7 @@ class WPDA_Data_Tables
      */
     public function get_data()
     {
+        
         if ( !isset( $_REQUEST['database'] ) || !isset( $_REQUEST['table_name'] ) ) {
             // input var okay.
             // Database and table name must be set!
@@ -866,16 +867,20 @@ class WPDA_Data_Tables
                 // Format date and time columns
                 for ( $i = 0 ;  $i < sizeof( $row ) ;  $i++ ) {
                     if ( '' !== $row[$i] && null !== $row[$i] ) {
-                        switch ( $column_array_ordered[$column_array_clean[$i]] ) {
-                            case 'date':
-                                $row[$i] = date_i18n( get_option( 'date_format' ), strtotime( $row[$i] ) );
-                                break;
-                            case 'time':
-                                $row[$i] = date_i18n( get_option( 'time_format' ), strtotime( $row[$i] ) );
-                                break;
-                            case 'datetime':
-                            case 'timestamp':
-                                $row[$i] = date_i18n( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), strtotime( $row[$i] ) );
+                        if ( isset( $column_array_clean[$i] ) ) {
+                            if ( isset( $column_array_ordered[$column_array_clean[$i]] ) ) {
+                                switch ( $column_array_ordered[$column_array_clean[$i]] ) {
+                                    case 'date':
+                                        $row[$i] = date_i18n( get_option( 'date_format' ), strtotime( $row[$i] ) );
+                                        break;
+                                    case 'time':
+                                        $row[$i] = date_i18n( get_option( 'time_format' ), strtotime( $row[$i] ) );
+                                        break;
+                                    case 'datetime':
+                                    case 'timestamp':
+                                        $row[$i] = date_i18n( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), strtotime( $row[$i] ) );
+                                }
+                            }
                         }
                     }
                 }

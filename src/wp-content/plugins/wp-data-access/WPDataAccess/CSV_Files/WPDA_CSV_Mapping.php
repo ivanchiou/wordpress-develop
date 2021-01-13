@@ -4,6 +4,7 @@ namespace WPDataAccess\CSV_Files {
 
 	use WPDataAccess\Data_Dictionary\WPDA_Dictionary_Lists;
 	use WPDataAccess\Plugin_Table_Models\WPDA_CSV_Uploads_Model;
+	use WPDataAccess\WPDA;
 
 	class WPDA_CSV_Mapping {
 
@@ -14,7 +15,6 @@ namespace WPDataAccess\CSV_Files {
 			'pipe'      => '|',
 			'colon'     => ':'
 		];
-		protected $schema_name = null;
 		protected $mapping     = null;
 
 		protected $delimiter          = ',';
@@ -27,12 +27,10 @@ namespace WPDataAccess\CSV_Files {
 		protected $wpnonce         = null;
 		protected $wpnonce_preview = null;
 
+		protected $db_schema_name      = [];
 		protected $schema_name_mapping = null;
 
 		public function __construct() {
-			global $wpdb;
-			$this->schema_name = $wpdb->dbname;
-
 			$this->csv_id =
 				isset( $_REQUEST['csv_id'] ) ?
 					sanitize_text_field( wp_unslash( $_REQUEST['csv_id'] ) ) : ''; // input var okay.
@@ -62,10 +60,13 @@ namespace WPDataAccess\CSV_Files {
 					$this->has_header_columns = false;
 				}
 			}
+
+			$this->db_schema_name = WPDA_Dictionary_Lists::get_db_schemas();
+
 			if ( isset( $this->mapping['database']['schema_name'] ) ) {
 				$this->schema_name_mapping = $this->mapping['database']['schema_name'];
 			} else {
-				$this->schema_name_mapping = sanitize_text_field( wp_unslash( $_REQUEST['schema_name'] ) );
+				$this->schema_name_mapping = WPDA::get_user_default_scheme();
 			}
 
 			$this->wpnonce         = wp_create_nonce( "wpda-csv-mapping-{$this->csv_id}" );
@@ -132,8 +133,31 @@ namespace WPDataAccess\CSV_Files {
 					}
 				?>
 
+				function wpda_get_tables() {
+					var schema_name = jQuery('#csv_schema_name').val();
+
+					var url = location.pathname + '?action=wpda_get_tables';
+					var data = { schema_name: schema_name };
+					jQuery.post(
+						url,
+						data,
+						function (data) {
+							jQuery('#csv_table_name').find('option').remove();
+							var jsonData = JSON.parse(data);
+							for (i = 0; i < jsonData.length; i++) {
+								jQuery('#csv_table_name').append(
+									jQuery("<option></option>")
+									.attr("value", jsonData[i]['table_name'])
+									.text(jsonData[i]['table_name'])
+								);
+							}
+							jQuery('#csv_table_name').trigger("change");
+						}
+					);
+				}
+
 				function wpda_get_columns(init=false) {
-					var schema_name = '<?php echo esc_attr( $this->schema_name_mapping ); ?>';
+					var schema_name = jQuery('#csv_schema_name').val();
 					var table_name = jQuery('#csv_table_name').val();
 
 					var url = location.pathname + '?action=wpda_get_columns';
@@ -171,7 +195,7 @@ namespace WPDataAccess\CSV_Files {
 				}
 
 				function save_mapping(refresh=false, exclude_mapping=false) {
-					var dbs_schema_name = '<?php echo esc_attr( $this->schema_name_mapping ); ?>';
+					var dbs_schema_name = jQuery('#csv_schema_name').val();
 					var dbs_table_name = jQuery('#csv_table_name').val();
 
 					var settings = {
@@ -225,7 +249,7 @@ namespace WPDataAccess\CSV_Files {
 							csv_id: '<?php echo esc_attr(  $this->csv_id );?>',
 							csv_mapping: new_mapping
 						}
-					}).success(
+					}).done(
 						function(msg) {
 							if (msg==='UPD-0' || msg==='UPD-1') {
 								alert('Mapping successfully updated');
@@ -256,7 +280,7 @@ namespace WPDataAccess\CSV_Files {
 							page_number: page_number,
 							page_length: page_length
 						}
-					}).success(
+					}).done(
 							function(msg) {
 								jQuery('#wpda_csv_preview_table').empty().append(msg);
 							}
@@ -276,7 +300,7 @@ namespace WPDataAccess\CSV_Files {
 
 				var wpda_moving_item = '';
 
-				jQuery(document).ready(function() {
+				jQuery(function() {
 					wpda_get_columns(true);
 
 					jQuery('#csv_table_columns').sortable({
@@ -334,7 +358,7 @@ namespace WPDataAccess\CSV_Files {
 					preview(1, 5);
 				});
 			</script>
-			<form method="post" action="?page=wpda&page_action=wpda_import_csv&schema_name=<?php echo esc_attr( $this->schema_name ); ?>">
+			<form method="post" action="?page=wpda&page_action=wpda_import_csv">
 				<br/>
 				<fieldset class="wpda_fieldset">
 					<legend>
@@ -388,9 +412,18 @@ namespace WPDataAccess\CSV_Files {
 				<br/>
 				<fieldset class="wpda_fieldset">
 					<legend>
-						<?php echo __( 'Destination table', 'wp-data-access' ); ?>
+						<?php echo __( 'Destination database and table', 'wp-data-access' ); ?>
 					</legend>
 				<div>
+					<select id="csv_schema_name" name="csv_schema_name" style="margin-left: 0; vertical-align: top;" onchange="wpda_get_tables()">
+						<?php
+						foreach ( $this->db_schema_name as $db_schema_name ) {
+							$selected = $this->schema_name_mapping === $db_schema_name['schema_name'] ? 'selected' : '';
+							echo "<option {$db_schema_name['schema_name']} $selected>{$db_schema_name['schema_name']}</option>";
+						}
+						?>
+					</select>
+					<br/>
 					<select id="csv_table_name" name="csv_table_name" style="margin-left: 0; vertical-align: top;" onchange="wpda_get_columns()">
 						<?php
 						foreach ( $table_list as $table ) {
@@ -492,7 +525,7 @@ namespace WPDataAccess\CSV_Files {
 			</form>
 			<form id="change_delimiter"
 				  method="post"
-				  action="?page=wpda&page_action=wpda_import_csv&schema_name=<?php echo esc_attr( $this->schema_name ); ?>"
+				  action="?page=wpda&page_action=wpda_import_csv"
 				  style="display: none;"
 			>
 				<input type="hidden" name="csv_id" value="<?php echo esc_attr( $this->csv_id); ?>"/>
@@ -500,7 +533,7 @@ namespace WPDataAccess\CSV_Files {
 				<input type="hidden" name="_wpnonce" value="<?php echo esc_attr( $wp_nonce_mapping ); ?>" />
 			</form>
 			<form id="import_form"
-				  action="?page=wpda&page_action=wpda_import_csv&schema_name=<?php echo esc_attr( $this->schema_name ) ?>"
+				  action="?page=wpda&page_action=wpda_import_csv"
 				  method="post"
 				  style="display: none;"
 			>

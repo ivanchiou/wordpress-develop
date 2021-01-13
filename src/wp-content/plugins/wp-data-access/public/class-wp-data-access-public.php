@@ -226,14 +226,19 @@ class WP_Data_Access_Public
      */
     public function wpdataaccess( $atts )
     {
+        global  $pagenow ;
+        if ( $pagenow === 'post.php' ) {
+            // Prevent errors on execution if shortcode is shown in visual editor.
+            return '';
+        }
         if ( 'on' !== WPDA::get_option( WPDA::OPTION_PLUGIN_WPDATAACCESS_POST ) ) {
             if ( $this->is_post() ) {
-                return '<p>' . __( 'Sorry, you cannot use this shortcode in a post', 'wp-data-access' ) . '</p>';
+                return '<p>' . __( 'Sorry, you cannot use shortcode wpdataaccess in a post!', 'wp-data-access' ) . '</p>';
             }
         }
         if ( 'on' !== WPDA::get_option( WPDA::OPTION_PLUGIN_WPDATAACCESS_PAGE ) ) {
             if ( $this->is_page() ) {
-                return '<p>' . __( 'Sorry, you cannot use this shortcode in a page', 'wp-data-access' ) . '</p>';
+                return '<p>' . __( 'Sorry, you cannot use shortcode wpdataaccess in a page!', 'wp-data-access' ) . '</p>';
             }
         }
         $atts = array_change_key_case( (array) $atts, CASE_LOWER );
@@ -295,20 +300,20 @@ class WP_Data_Access_Public
      */
     public function wpdadiehard( $atts )
     {
-        if ( 'on' !== WPDA::get_option( WPDA::OPTION_PLUGIN_WPDADIEHARD_POST ) ) {
-            if ( $this->is_post() ) {
-                return '<p>' . __( 'Sorry, you cannot use this shortcode in a post', 'wp-data-access' ) . '</p>';
-            }
-        }
-        if ( 'on' !== WPDA::get_option( WPDA::OPTION_PLUGIN_WPDADIEHARD_PAGE ) ) {
-            if ( $this->is_page() ) {
-                return '<p>' . __( 'Sorry, you cannot use this shortcode in a page', 'wp-data-access' ) . '</p>';
-            }
-        }
         global  $pagenow ;
         if ( $pagenow === 'post.php' ) {
             // Prevent errors on execution if shortcode is shown in visual editor.
             return '';
+        }
+        if ( 'on' !== WPDA::get_option( WPDA::OPTION_PLUGIN_WPDADIEHARD_POST ) ) {
+            if ( $this->is_post() ) {
+                return '<p>' . __( 'Sorry, you cannot use shortcode wpdadiehard in a post!', 'wp-data-access' ) . '</p>';
+            }
+        }
+        if ( 'on' !== WPDA::get_option( WPDA::OPTION_PLUGIN_WPDADIEHARD_PAGE ) ) {
+            if ( $this->is_page() ) {
+                return '<p>' . __( 'Sorry, you cannot use shortcode wpdadiehard in a page!', 'wp-data-access' ) . '</p>';
+            }
         }
         global  $wpdb ;
         $atts = array_change_key_case( (array) $atts, CASE_LOWER );
@@ -601,7 +606,7 @@ class WP_Data_Access_Public
         // Select all rows if checkbox cb-select-all-1 or cb-select-all-2 is clicked
         ?>
 		<script type='text/javascript'>
-			jQuery(document).ready(function () {
+			jQuery(function () {
 				jQuery('#cb-select-all-1').on('click', function (event) {
 					if (jQuery('#cb-select-all-1').is(':checked')) {
 						jQuery('[name="bulk-selected[]"]').prop('checked', true);

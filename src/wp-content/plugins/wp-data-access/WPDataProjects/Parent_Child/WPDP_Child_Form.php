@@ -207,6 +207,7 @@ namespace WPDataProjects\Parent_Child {
 								if ( $parent_key === $pkey ) {
 									$child_item->set_item_default_value( $this->parent['parent_key_value'][ $parent_key ] );
 									$child_item->set_hide_item( true );
+									$child_item->set_foreign_key_column( true );
 								}
 							}
 						}

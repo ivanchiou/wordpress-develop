@@ -70,7 +70,7 @@ namespace WPDataProjects\Parent_Child {
 		protected function bind_action_buttons() {
 			?>
 			<script type='text/javascript'>
-				jQuery(document).ready(function () {
+				jQuery(function () {
 					jQuery("#doaction").click(function () {
 						return wpdp_action_button("<?php echo $this->message_confirm_delete; ?>");
 					});

@@ -843,7 +843,7 @@ namespace WPDataAccess\Simple_Form {
 					return !failed;
 				}
 
-				jQuery(document).ready(function () {
+				jQuery(function () {
 					<?php if ( 'view' === $this->action ) { ?>
 					jQuery("#<?php echo esc_attr( $this->current_form_id ); ?> input").not(':button').prop("readonly", true);
 					jQuery("#<?php echo esc_attr( $this->current_form_id ); ?> textarea").prop("readonly", true);
@@ -857,7 +857,7 @@ namespace WPDataAccess\Simple_Form {
 					jQuery("#<?php echo esc_attr( $this->current_form_id ); ?> input.auto_increment").prop("readonly", true);
 					<?php } ?>
 					jQuery("#<?php echo esc_attr( $this->current_form_id ); ?> input.wpda_readonly").prop("readonly", true);
-					jQuery('.wpda_data_type_number').bind('keyup paste', function () {
+					jQuery('.wpda_data_type_number').on('keyup paste', function () {
 						this.value = this.value.replace(/[^\d\-\.\,]/g, ''); // Allow only 0-9 . ,
 						if (isNaN(this.value)) {
 							jQuery(this).addClass('wpda_input_error');
@@ -898,7 +898,7 @@ namespace WPDataAccess\Simple_Form {
 		 * @since   1.0.0
 		 *
 		 */
-		protected function get_nonce_action( $use_old_value = true ) {
+		public function get_nonce_action( $use_old_value = true ) {
 			// Add prefix + table name to wp_nonce action.
 			$wp_nonce_action = "wpda-simple-form-{$this->table_name}";
 
@@ -1367,7 +1367,7 @@ namespace WPDataAccess\Simple_Form {
 		/**
 		 * Hide items
 		 *
-		 * @param array $items_to_hide Arrays contains item names of items that should be defined as hidden
+		 * @param array $items_to_hide Array contains item names of items to be defined as hidden
 		 *
 		 * @since 2.0.15
 		 */
@@ -1376,7 +1376,7 @@ namespace WPDataAccess\Simple_Form {
 				foreach ( $items_to_hide as $column_name ) {
 					foreach ( $this->form_items as $form_item ) {
 						if ( $form_item->get_item_name() === $column_name ) {
-							$form_item->set_hide_item( true );
+							$form_item->set_hide_item_init( true );
 						}
 					}
 				}

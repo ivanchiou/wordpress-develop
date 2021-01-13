@@ -49,6 +49,10 @@ namespace WPDataAccess\Connection {
 			parent::__construct( $dbuser, $dbpassword, $dbname, $dbhost );
 		}
 
+		public function is_connected() {
+			return $this->dbh->connect_errno === 0;
+		}
+
 		/**
 		 * Overwrite method
 		 *
@@ -58,7 +62,7 @@ namespace WPDataAccess\Connection {
 		 *
 		 * @return bool
 		 */
-		public function db_connect( $allow_bail = true ) {
+		public function db_connect( $allow_bail = false ) {
 			$this->is_mysql = true;
 
 			/*
@@ -98,10 +102,14 @@ namespace WPDataAccess\Connection {
 				}
 
 				if ( WP_DEBUG ) {
-					mysqli_real_connect( $this->dbh, $host, $this->dbuser, $this->dbpassword, null, $port, $socket, $client_flags );
+					if ( ! mysqli_real_connect( $this->dbh, $host, $this->dbuser, $this->dbpassword, null, $port, $socket, $client_flags ) ) {
+						return false;
+					}
 				} else {
 					// phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
-					@mysqli_real_connect( $this->dbh, $host, $this->dbuser, $this->dbpassword, null, $port, $socket, $client_flags );
+					if ( ! @mysqli_real_connect( $this->dbh, $host, $this->dbuser, $this->dbpassword, null, $port, $socket, $client_flags ) ) {
+						return false;
+					}
 				}
 
 				if ( $this->dbh->connect_errno ) {

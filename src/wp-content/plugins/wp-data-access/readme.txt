@@ -3,8 +3,8 @@ Contributors: peterschulznl, maxxschulz, freemius
 Tags: wp data access, database, tables, table, tools, manage, manager
 Donate link: https://www.paypal.me/kpsch
 Requires at least: 4.8.3
-Tested up to: 5.5
-Stable tag: 3.6.5
+Tested up to: 5.6
+Stable tag: 4.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -24,31 +24,51 @@ For advanced users, the plugin support more complex features like remote databas
 * Export to SQL, XML, JSON, CSV and Excel
 * Import SQL and CSV files
 * WordPress Media Library integration
-* Create dynamic hyperlinks (column value substitution)
+* Inline editing (PREMIUM)
+* Full-text search (PREMIUM)
+* Individual column search (PREMIUM)
+* Static hyperlinks
+* Dynamic hyperlinks
 
 ### Data Publisher
 > Publish responsive tables
 
 * Responsive HTML tables
-* Ajax support (no page loading)
-* WordPress Media Library integration
-* Dynamic hyperlink integration
-* Easy level: no coding skills required
-* Advanced level: requires basic JSON knowledge
-* Expert level: requires JavaScript knowledge
 * Supports local and remote databases
+* WordPress Media Library integration
+* Static and dynamic hyperlink integration
+* Easy level: no coding skills required
+* Advanced level: JSON configuration
+* Expert level: add JavaScript functions
+* Export to CSV, Excel, PDF and SQL (PREMIUM)
+* Print publication (PREMIUM)
+* Copy publication to clipboard (PREMIUM)
+* Individual column search (PREMIUM)
+* Full-text search (PREMIUM)
 
 ### Data Projects
 > Write your own WordPress apps
 
+* Supports local and remote databases
 * Auto generated CRUD pages
-* Parent-child pages
+* Auto generate parent-child pages
 * WordPress role integration
 * WordPress media library integration
-* Dynamic hyperlink integration
+* Statis and dynamic hyperlink integration
 * Accessible from the WordPress dashboard
-* Shortcode support for web pages
-* Supports local and remote databases
+* Add to webpage with shortcode wpdadiehard (FREE)
+* Add to webpage with shortcode wpdadataforms (PREMIUM)
+* Inline editing (PREMIUM)
+* Full-text search (PREMIUM)
+* Individual column search (PREMIUM)
+
+### Data Forms (PREMIUM)
+> State of the art responsive apps
+
+* Turn your Data Project into a responsive app
+* jQuery DataTables
+* AngularJS
+* jQuery UI styling
 
 ### Data Designer
 > Create tables and indexes
@@ -67,7 +87,7 @@ For advanced users, the plugin support more complex features like remote databas
 - [Plugin Website](https://wpdataaccess.com/)
 - [Download Plugin](https://wordpress.org/plugins/wp-data-access/)
 - [What's New](https://wpdataaccess.com/docs/documentation/updates/whats-new/)
-- [Known Limitations](https://wpdataaccess.com/docs/documentation/getting-started/known-limitations/)
+- [Documentation](https://wpdataaccess.com/docs/documentation/)
 
 == Installation ==
 (1) Upload the WP Data Access plugin to your blog
