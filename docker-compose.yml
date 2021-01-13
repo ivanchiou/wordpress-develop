@@ -138,7 +138,7 @@ services:
       MYSQL_PORT_3306_TCP_ADDR: localhost
       PMA_HOST: mysql
       PMA_USERNAME: root
-      PMA_PASSWORD: Bir^(L4!mdFNORBO6SaEeMF
+      PMA_PASSWORD: password
     networks:
       - wpdevnet      
 
