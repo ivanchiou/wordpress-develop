@@ -62,9 +62,9 @@ services:
       - "3005:3306"
 
     environment:
-      MYSQL_ROOT_PASSWORD: Bir^(L4!mdFNORBO6SaEeMF
+      MYSQL_ROOT_PASSWORD: password
       MYSQL_USER: root
-      MYSQL_PASSWORD: Bir^(L4!mdFNORBO6SaEeMF
+      MYSQL_PASSWORD: password
       MYSQL_DATABASE: mysql      
 
     volumes:
