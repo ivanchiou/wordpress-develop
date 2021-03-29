@@ -1,0 +1,564 @@
+span.red {
+    color: #CF0202;
+}
+
+span.green {
+    color: green;
+}
+
+.erp-hr-employees {
+
+    table.wp-list-table {
+
+        .column-name {
+            img {
+                float: left;
+                margin-right: 10px;
+                margin-top: 1px;
+            }
+        }
+
+        .column-balance {
+            width: 8%;
+        }
+
+        .column-status {
+            width: 8%;
+
+            span {
+                color: #fff;
+                padding: 0 2px;
+            }
+
+            .status-active {
+                background: rgba(66, 146, 34, 0.4);
+            }
+            .status-inactive {
+                background: rgba(165, 161, 161, .4);
+            }
+            .status-resigned {
+                background: rgba(168, 117, 42, .4);
+            }
+            .status-terminated {
+                background: rgba(215, 50, 45, .4);
+            }
+            .status-deceased {
+                background: rgb(82, 82, 82, .4);
+            }
+        }
+
+        .column-comments {
+            width: 25%;
+        }
+    }
+
+    span.active_dot {
+        height: 8px;
+        width: 8px;
+        background-color: #17C739;
+        display: inline-block;
+        border-radius: 35px;
+        margin-left: 5px;
+    }
+}
+
+
+.hrm-dashboard {
+    .badge-container {
+        margin-bottom: 40px;
+        .clearfix();
+
+        .badge-wrap {
+            float: left;
+            width: 32%;
+            // color: #fff;
+            margin-right: 10px;
+            background: #fff;
+
+            .badge-inner {
+                padding: 15px 0 0 15px;
+            }
+
+            h3 {
+                // color: #fff;
+                font-size: 34px;
+                margin: 10px 0 20px 0;
+            }
+
+            .badge-footer {
+                text-align: center;
+                padding: 5px 0;
+
+                &:hover {
+                    background: rgba(0, 0, 0, 0.5);
+                }
+
+                a {
+                    color: #fff;
+                    text-decoration: none;
+                    display: block;
+                }
+            }
+        }
+    }
+}
+
+
+.job-tab-wrap,
+.performance-tab-wrap {
+    table.widefat {
+        margin-bottom: 20px;
+
+        a.remove,a.performance-remove {
+            visibility: hidden;
+            color: #999;
+        }
+
+        td.action, th.action {
+            width: 4%;
+        }
+
+        tr:hover {
+            a.remove, a.performance-remove {
+                visibility: visible;
+            }
+        }
+    }
+
+    a.action {
+        float: right;
+        margin-top: -38px;
+        text-decoration: none;
+
+        span.erp-performance-dashicon {
+            line-height: 30px;
+            font-size: 13px;
+        }
+    }
+}
+
+.performance-form-wrap {
+    .row {
+        label {
+            min-width:190px !important;
+        }
+    }
+}
+
+
+.erp-hr-leave-policy {
+    td span.leave-color {
+        border-radius: 3px;
+        display: block;
+        height: 20px;
+        width: 50px;
+        margin-top: 12px;
+        background-color: #ddd;
+    }
+}
+
+table.entitlements {
+    td p {
+        margin: 2px 0 0;
+    }
+}
+
+table.leaves {
+    td p {
+        margin: 2px 0 0;
+    }
+
+    th#name {
+        width: 200px;
+    }
+
+    th#policy {
+        width: 120px;
+    }
+
+    th#available {
+        width: 75px;
+    }
+
+    th#request {
+        width: 150px;
+    }
+
+    th#status, td#status {
+        width: 100px;
+    }
+
+    th#reason {
+        width: 250px;
+    }
+
+    th#approved_by {
+        width: 150px;
+    }
+
+    td.column-status {
+        font-size: 11px;
+        font-weight: bold;
+
+        span {
+            padding: 2px 5px;
+            border-radius: 3px;
+            margin-top: 10px;
+            display: inline-block;
+        }
+
+        .status-1 {
+            background: #7ad03a;
+            color: #fff;
+        }
+
+        .status-2 {
+            background: #ffba00;
+            color: #fff;
+        }
+
+        .status-3 {
+            background: #dd3d36;
+            color: #fff;
+        }
+
+        .status-4 {
+            background: #3E87D0;
+            color: #fff;
+        }
+    }
+}
+
+.erp-hr-leave-request-new {
+    .show-days {
+        width: 97%;
+
+        .table-wrap {
+            border: 1px solid #ddd;
+
+            .total {
+                border-top: 1px solid #ddd;
+                background: #fff;
+                font-weight: bold;
+                padding: 8px 0 8px 10px;
+            }
+        }
+        table.list-days {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+
+            tbody td {
+                padding: 2px 0 2px 15px;
+                margin: 0;
+                border: none;
+            }
+
+            tr:nth-child(2n+1) {
+                background-color: #fff;
+            }
+        }
+    }
+
+    /*====================================
+    =            BREAK POINTS            =
+    ====================================*/
+    @wide-screen-down: ~'(max-width: 1920px)';
+    @desktop-down: ~'(max-width: 991px)';
+    @tablet-down: ~'(max-width: 767px)';
+    @phone-down: ~'(max-width: 480px)';
+    @small-phone-down: ~'(max-width: 320px)';
+
+    &.erp-hr-leave-reqs-wrap {
+
+        .row {
+            width: 400px;
+            @media @tablet-down {
+                width: auto;
+            }
+            @media @phone-down {
+                width: auto;
+            }
+
+            margin: 10px 0px;
+            .clearfix();
+
+            label {
+                display:block;
+                margin-bottom: 5px;
+            }
+
+            &.two-col {
+                .clearfix();
+
+                .cols {
+                    float: left;
+                    width: 48%;
+                    margin-right: 2%;
+
+                    &.last {
+                        margin-right: 0;
+                    }
+                }
+            }
+        }
+    }
+}
+
+/**
+ * Employee notes tab
+ */
+.note-tab-wrap {
+
+    .note-form {
+        .clearfix();
+
+        padding: 12px;
+        border: 1px solid #ddd;
+        position: relative;
+
+        textarea {
+            width: 100%;
+            padding: 10px;
+        }
+
+        p.submit {
+            margin: 9px 0 0 0;
+            padding: 0;
+            float: right;
+        }
+
+        span.erp-note-loader{
+            right:100px;
+            bottom:15px;
+            display:none;
+        }
+    }
+
+    ul.notes-list {
+        .avatar-wrap {
+            float: left;
+            width: 32px;
+            margin-right: 15px;
+
+            img {
+                max-width: 32px;
+                height: auto;
+            }
+        }
+
+        .note-wrap {
+            float: left;
+            width: 90%;
+
+            .by {
+                padding-bottom: 10px;
+                font-size: 12px;
+
+                a.author {
+                    text-decoration: none;
+                    font-weight: bold;
+                    color: #444;
+                }
+
+                .date {
+                    color: #999;
+                    margin-left: 10px;
+                }
+            }
+
+            .row-action {
+                font-size:12px;
+                margin-top: 5px;
+
+                a {
+                   text-decoration: none;
+                }
+            }
+
+
+            p {
+                margin: 0 0 1em 0;
+
+                &:last-child {
+                    margin: 0;
+                }
+            }
+        }
+
+        li {
+            .clearfix();
+            border-bottom: 1px solid #ddd;
+            border-top: 1px solid #fff;
+            padding: 10px 0;
+            margin: 0;
+
+            &:hover {
+                .row-actions {
+                    visibility:visible;
+                }
+            }
+
+            &:last-child {
+                border-bottom: none;
+            }
+
+            &:first-child {
+                border-top: none;
+            }
+        }
+    }
+    .show {
+        display: block;
+    }
+    .hide {
+        display: none;
+    }
+}
+
+.wperp-hrm-report{
+    .report-month{
+        border-bottom: 1px solid #ddd;
+        padding-bottom: 8px;
+        margin-bottom: 8px;
+    }
+    table {
+
+        th{
+            padding-left: 15px;
+            text-align: right;
+            width: 20px;
+            padding-right: 5px;
+            font-weight: bold;
+            font-size: 120% ;
+
+
+        }
+    }
+    .emp_person{
+
+    }
+}
+
+
+@media print {
+
+    .erp-hide-print {
+        display: none !important;
+    }
+
+    .erp-work-experience-wrap {
+        margin-top: 150px !important;
+    }
+
+    #wpadminbar,
+    #adminmenumain,
+    #wpfooter {
+        display: none;
+    }
+
+    #adminmenuback,
+    #adminmenuwrap {
+        width:0px;
+    }
+
+    #wpcontent {
+        margin-left: 0px;
+    }
+}
+
+.erp-employee-form {
+    .erp_form_generic();
+    .photo-container{
+        height: 200px;
+        width: 200px;
+        border: 1px solid #ddd;
+        img{
+            max-width: 100%;
+            height: auto;
+        }
+    }
+
+    .erp-employee-modal-right{
+        border: 1px solid #ddd;
+    }
+}
+
+.leave-policy-form, .leave-entitlement-form {
+    background: #fff;
+    padding: 20px;
+    width: 800px;
+    margin: 0 auto;
+
+    .form-group {
+        background: #f1f1f1;
+        border: 2px solid #eee;
+        padding-left: 10px;
+        margin-bottom: 10px;
+        border-radius: 3px;
+
+        .row {
+            margin: 15px 0;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            max-width: 700px;
+
+            .description, .error-text {
+                margin-left: 190px;
+                margin-top: 5px;
+                font-size: 12px;
+                color: #757575;
+                width: 100%;
+                width: -moz-available;          /* WebKit-based browsers will ignore this. */
+                width: -webkit-fill-available;  /* Mozilla-based browsers will ignore this. */
+                width: fill-available;
+            }
+
+            .error-text {
+                color: #ff3860;
+                font-weight: bold;
+            }
+
+            &.applicable-form-row {
+                input[type=number] {
+                    width: 100px;
+                }
+
+                span {
+                    margin-left: 20px;
+                }
+            }
+        }
+
+        label {
+            width: 190px;
+            display: inline-block;
+        }
+
+        span.checkbox label {
+            width: auto;
+        }
+
+        .leave-policy-input {
+            min-width: 300px;
+        }
+    }
+}
+
+.create-policy-name {
+    .form-field {
+        width: 90%;
+        margin: 1em 0;
+
+        .description {
+            font-style: italic;
+            color: #666;
+        }
+    }
+}
+
+#erp-hr-leave-req-leave-policy,
+.new-leave-request-form #f_year {
+    width: 162px;
+}
