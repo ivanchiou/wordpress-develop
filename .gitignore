@@ -36,6 +36,11 @@ wp-tests-config.php
 /src/wp-content/mu-plugins
 /src/wp-content/plugins/*
 !/src/wp-content/plugins/wp-erp
+/src/wp-content/plugins/wp-erp/*
+!/src/wp-content/plugins/wp-erp/assets
+!/src/wp-content/plugins/wp-erp/i18n
+!/src/wp-content/plugins/wp-erp/includes
+!/src/wp-content/plugins/wp-erp/modules
 !/src/wp-content/plugins/wp-data-access
 /src/wp-content/themes/*
 !/src/wp-content/themes/twentyten
