@@ -2018,7 +2018,6 @@ table.leaves td.column-status .status-4 {
   background-color: #fff;
 }
 .erp-hr-leave-request-new.erp-hr-leave-reqs-wrap .row {
-  width: 400px;
   margin: 10px 0px;
 }
 @media (max-width: 767px) {
@@ -4630,5 +4629,24 @@ div.erp-nav-container.--show-secondary .-secondary {
   }
   .erp-table td:last-child {
     border-bottom: 0;
+  }
+}
+
+.erp-leave-flex {
+  display: flex;
+}
+
+.erp-leave-flex > span {
+  display: flex;
+  margin-right: 20px;
+}
+
+.erp-modal .content .row.erp-leave-flex label {
+  min-width: 45px;
+}
+
+@media (min-width: 783px) {
+  .erp-modal .content .row.erp-leave-flex label {
+    min-width: 130px;
   }
 }

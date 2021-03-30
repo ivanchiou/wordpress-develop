@@ -11,8 +11,10 @@ class Leave_Request extends Model {
     protected $table = 'erp_hr_leave_requests';
 
     protected $fillable = [
-        'user_id', 'leave_id', 'leave_entitlement_id', 'day_status_id', 'days',
-        'start_date', 'end_date', 'reason', 'last_status', 'created_by',
+        'user_id', 'leave_id', 'leave_entitlement_id', 'day_status_id', 'days', 'taken_year',
+        'start_date', 'end_date', 'days_in_federation', 'days_out_federation', 'contact_no', 
+        'address_on_leave', 'substitute_required', 'substitute_type', 
+        'reason', 'last_status', 'created_by',
     ];
 
     /**
@@ -104,5 +106,17 @@ class Leave_Request extends Model {
      */
     public function entitlement() {
         return $this->hasOne( 'WeDevs\ERP\HRM\Models\Leave_Entitlement', 'id', 'leave_entitlement_id' );
+    }
+
+    public static function get_substitute_type_enum()  {
+        global $wpdb;
+        $table = $wpdb->prefix . 'erp_hr_leave_requests';
+        $type = $wpdb->get_results("SHOW COLUMNS FROM {$table} WHERE Field = 'substitute_type'")[0]->Type;
+        preg_match('/^enum\((.*)\)$/', $type, $matches);
+        $values = array();
+        foreach(explode(',', $matches[1]) as $value){
+            $values[] = trim($value, "'");
+        }
+        return $values;
     }
 }
