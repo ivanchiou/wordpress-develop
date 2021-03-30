@@ -1951,6 +1951,10 @@ table.leaves th#available {
 table.leaves th#request {
   width: 150px;
 }
+table.leaves th#taken_year,
+table.leaves td#taken_year {
+  width: 150px;
+}
 table.leaves th#status,
 table.leaves td#status {
   width: 100px;
@@ -1985,6 +1989,10 @@ table.leaves td.column-status .status-3 {
 }
 table.leaves td.column-status .status-4 {
   background: #3E87D0;
+  color: #fff;
+}
+table.leaves td.column-status .status-5 {
+  background: #c46210;
   color: #fff;
 }
 .erp-hr-leave-request-new {

@@ -92,6 +92,7 @@ class Leave_Requests_List_Table extends \WP_List_Table {
             'policy'      => __( 'Policy', 'erp' ),
             'request'     => __( 'Request', 'erp' ),
             'available'   => __( 'Available', 'erp' ),
+            'taken_year'  => __( 'Taken for the year', 'erp' ),
             'status'      => __( 'Status', 'erp' ),
             'reason'      => __( 'Reason', 'erp' ),
             'approved_by' => __( 'Approved By', 'erp' ),
@@ -119,6 +120,9 @@ class Leave_Requests_List_Table extends \WP_List_Table {
 
             case 'policy':
                 return esc_html( $item->policy_name );
+
+            case 'taken_year':
+                return esc_html( $item->taken_year );                
 
             case 'status':
                 return sprintf( '<span class="status-%s">%s</span>', absint( $item->status ), erp_hr_leave_request_get_statuses( $item->status ) );
@@ -280,6 +284,7 @@ class Leave_Requests_List_Table extends \WP_List_Table {
         $delete_url  = wp_nonce_url( sprintf( $tpl, 'delete', $item->id, $item->f_year ), $nonce );
         $reject_url  = wp_nonce_url( sprintf( $tpl, 'reject', $item->id, $item->f_year ), $nonce );
         $approve_url = wp_nonce_url( sprintf( $tpl, 'approve', $item->id, $item->f_year ), $nonce );
+        $pre_approve_url = wp_nonce_url( sprintf( $tpl, 'pre_approve', $item->id, $item->f_year ), $nonce );
         $pending_url = wp_nonce_url( sprintf( $tpl, 'pending', $item->id, $item->f_year ), $nonce );
 
         if ( erp_get_option( 'erp_debug_mode', 'erp_settings_general', 0 ) ) {
@@ -287,7 +292,10 @@ class Leave_Requests_List_Table extends \WP_List_Table {
         }
 
         if ( $item->status == '2' || $item->status == '4' ) {
-            $actions['approved']   = sprintf( '<a class="erp-hr-leave-approve-btn" data-id="%s" href="%s">%s</a>', $item->id, $approve_url, __( 'Approve', 'erp' ) );
+            $actions['pre_approved']   = sprintf( '<a class="erp-hr-leave-pre-approve-btn" data-id="%s" href="%s">%s</a>', $item->id, $pre_approve_url, __( '1st Level Approve', 'erp' ) );
+            $actions['reject']     = sprintf( '<a class="erp-hr-leave-reject-btn" data-id="%s" href="%s">%s</a>', $item->id, $reject_url, __( 'Reject', 'erp' ) );
+        } else if ( $item->status == '5' || $item->status == '4' ) {
+            $actions['approved']   = sprintf( '<a class="erp-hr-leave-approve-btn" data-id="%s" href="%s">%s</a>', $item->id, $approve_url, __( 'Final Approve', 'erp' ) );
             $actions['reject']     = sprintf( '<a class="erp-hr-leave-reject-btn" data-id="%s" href="%s">%s</a>', $item->id, $reject_url, __( 'Reject', 'erp' ) );
         } elseif ( $item->status == '1' ) {
             $actions['reject']   = sprintf( '<a class="erp-hr-leave-reject-btn" data-id="%s" href="%s">%s</a>', $item->id, $reject_url, __( 'Reject', 'erp' ) );

@@ -39,6 +39,7 @@
             $( '.erp-hr-holiday-wrap' ).on( 'change', '#erp-ical-input', self, this.uploadICal );
 
             $( '.erp-hr-leave-requests' ).on( 'click', '.erp-hr-leave-approve-btn', self, this.leave.approve );
+            $( '.erp-hr-leave-requests' ).on( 'click', '.erp-hr-leave-pre-approve-btn', self, this.leave.preApprove );
             $( '.erp-hr-leave-requests' ).on( 'click', '.erp-hr-leave-reject-btn', self, this.leave.reject );
             $( '.request-list-table' ).on( 'click', 'a.submitdelete', self, this.leave.remove );
 
@@ -691,6 +692,53 @@
                     }
                 } );
             },
+
+            preApprove: function(e) {
+                e.preventDefault();
+
+                var self = $(this),
+                data = {
+                    id : self.data('id')
+                };
+
+                $.erpPopup({
+                    title: wpErpHr.popup.leave_pre_approve,
+                    button: wpErpHr.popup.leave_pre_approve_btn,
+                    id: 'erp-hr-leave-approve-popup',
+                    content: wperp.template('erp-hr-leave-pre-approve-js-tmp')(data).trim(),
+                    extraClass: 'smaller',
+                    onSubmit: function(modal) {
+                        wp.ajax.send( {
+                            data: this.serialize()+'&_wpnonce='+wpErpHr.nonce,
+                            success: function(res) {
+                                var error_string = '';
+                                if ( res.errors ) {
+                                    $.each( res.errors, function( key, val ) {
+                                        error_string += '<div class="notice notice-error is-dismissible"><p>' + val[0] + '</p></div>';
+                                    });
+                                    if ( error_string != '' ) {
+                                        $('#leave-approve-form-error').html( error_string );
+                                    }
+                                }
+                                else if( res.redirect ) {
+                                    var approve_url = window.location.origin + window.location.pathname + '?1=1';
+                                    $.each( res.redirect, function( key, val ) {
+                                        approve_url += '&' + key + '=' + val;
+                                    });
+                                    window.location.replace( approve_url );
+                                }
+                                else {
+                                    var approve_url = window.location.origin + window.location.pathname + '?page=erp-hr&section=leave&status=1';
+                                    window.location.replace( approve_url );
+                                }
+                            },
+                            error: function(error) {
+                                modal.showError( error );
+                            }
+                        });
+                    }
+                }); //popup
+            },            
 
             approve: function(e) {
                 e.preventDefault();

@@ -368,6 +368,11 @@ class Form_Handler {
                     $status     = 1;
                     $comment    = __( 'Approved from bulk action', 'erp' );
                     break;
+                
+                case 'pre_approved':
+                    $status     = 5;
+                    $comment    = __( '1st Level Approved from bulk action', 'erp' );
+                    break;      
 
                 case 'reject':
                     $status     = 3;
@@ -869,6 +874,7 @@ class Form_Handler {
 
         $action  = sanitize_text_field( wp_unslash( $_GET['leave_action'] ) );
         $stauses = [
+            'pre_approve',
             'delete',
             'reject',
             'approve',
@@ -898,6 +904,10 @@ class Form_Handler {
             case 'approve':
                 $status = 1;
                 break;
+
+            case 'pre_approve':
+                $status = 5;
+                break;                
 
             case 'pending':
                 $status = 2;

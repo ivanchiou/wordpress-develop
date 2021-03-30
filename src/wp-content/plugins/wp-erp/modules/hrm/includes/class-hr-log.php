@@ -851,7 +851,7 @@ class Hr_Log {
      *
      * @return void
      */
-    public function update_leave_request( $request_id, $old_data ) {
+    public function update_leave_request( $request_id, $old_data ) {        
         if ( ! $request_id ) {
             return;
         }
@@ -867,6 +867,7 @@ class Hr_Log {
                         1 => 'Approved',
                         2 => 'pending',
                         3 => 'Rejected',
+                        5 => '1st Level Approved',
                     ];
                     $key['status'] = $status[ $key['last_status'] ];
                     unset( $key['last_status'] );

@@ -188,6 +188,8 @@ class Human_Resource {
                 'leave_approve'         => __( 'Approve Reason', 'erp' ),
                 'leave_reject'          => __( 'Reject Reason', 'erp' ),
                 'leave_approve_btn'     => __( 'Approve Request', 'erp' ),
+                'leave_pre_approve'     => __( '1st Level Approve Reason', 'erp' ),
+                'leave_pre_approve_btn' => __( '1st Level Approve Request', 'erp' ),                
                 'leave_reject_btn'      => __( 'Reject Request', 'erp' ),
                 'already_terminate'     => __( 'Sorry, this employee is already terminated', 'erp' ),
                 'already_active'        => __( 'Sorry, this employee is already active', 'erp' ),
@@ -311,6 +313,7 @@ class Human_Resource {
 
             case 'leave':
                 erp_get_js_template( WPERP_HRM_JS_TMPL . '/leave-approve.php', 'erp-hr-leave-approve-js-tmp' );
+                erp_get_js_template( WPERP_HRM_JS_TMPL . '/leave-pre-approve.php', 'erp-hr-leave-pre-approve-js-tmp' );
                 erp_get_js_template( WPERP_HRM_JS_TMPL . '/leave-reject.php', 'erp-hr-leave-reject-js-tmp' );
         }
 

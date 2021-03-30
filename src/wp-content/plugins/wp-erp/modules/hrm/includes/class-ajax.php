@@ -11,6 +11,8 @@ use WeDevs\ERP\HRM\Models\Leave_Entitlement;
 use WeDevs\ERP\HRM\Models\Leave_Policy;
 use WeDevs\ERP\HRM\Models\Leave_Request;
 
+use WP_Error;
+
 /**
  * Ajax handler
  */
@@ -122,7 +124,7 @@ class Ajax_Handler {
     /**
      * Leave approve
      */
-    public function leave_approve() {
+    public function leave_approve() {   
         if ( ! isset( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['_wpnonce'] ) ), 'wp-erp-hr-nonce' ) ) {
             $this->send_error( __( 'Error: Nonce verification failed', 'erp' ) );
         }
@@ -134,8 +136,9 @@ class Ajax_Handler {
 
         $request_id = isset( $_POST['leave_request_id'] ) ? intval( $_POST['leave_request_id'] ) : 0;
         $comments   = isset( $_POST['reason'] ) ? sanitize_text_field( wp_unslash( $_POST['reason'] ) ) : '';
+        $status   = isset( $_POST['status'] ) ? $_POST['status'] : 1;
 
-        $update = erp_hr_leave_request_update_status( $request_id, 1, $comments );
+        $update = erp_hr_leave_request_update_status( $request_id, $status, $comments );   
 
         if ( is_wp_error( $update ) ) {
             $this->send_error( $update->get_error_message() );

@@ -1504,6 +1504,7 @@ function erp_hr_get_leave_requests( $args = [], $cached = true ) {
             $temp_data['name']           = $single_request['display_name'];
             $temp_data['display_name']   = $single_request['display_name'];
             $temp_data['leave_id']       = $request->leave_id;
+            $temp_data['taken_year']     = $request->taken_year;
             $temp_data['policy_name']    = $request->leave->name;
             $temp_data['start_date']     = $request->start_date;
             $temp_data['end_date']       = $request->end_date;
@@ -1730,6 +1731,7 @@ function erp_hr_leave_request_update_status( $request_id, $status, $comments = '
         case 2: // pending
         case 3: // rejected
         case 4: // forwarded
+        case 5:
             if ( $status === 1 ) { // approve this request
                 // 0. check if we are in the same financial year
                 $f_year_start = $request->entitlement->financial_year->start_date;
@@ -1834,7 +1836,7 @@ function erp_hr_leave_request_update_status( $request_id, $status, $comments = '
 
     // update last_status of current request
     $request->last_status = $status;
-    $request->save();
+    $request->save();  
 
     // notification email
     if ( 1 === $status ) {
@@ -1849,7 +1851,7 @@ function erp_hr_leave_request_update_status( $request_id, $status, $comments = '
         if ( is_a( $rejected_email, '\WeDevs\ERP\Email' ) ) {
             $rejected_email->trigger( $request_id );
         }
-    }
+    }  
 
     $status = ( $status == 1 ) ? 'approved' : ( $status == 2 ? 'pending' : 'reject' );
 
@@ -1920,6 +1922,7 @@ function erp_hr_delete_leave_request( $request_id ) {
 function erp_hr_leave_request_get_statuses( $status = false ) {
     $statuses = apply_filters( 'erp_hr_leave_approval_statuses', [
         'all' => esc_attr__( 'All', 'erp' ),
+        '5'   => esc_attr__( '1st Level Approved', 'erp' ),       
         '1'   => esc_attr__( 'Approved', 'erp' ),
         '2'   => esc_attr__( 'Pending', 'erp' ),
         '3'   => esc_attr__( 'Rejected', 'erp' ),
