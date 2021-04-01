@@ -55,62 +55,6 @@ class Admin_Menu {
         }
 
         erp_add_menu( 'hr', [
-            'title'         => __( 'Reports', 'erp' ),
-            'capability'    => 'erp_hr_manager',
-            'slug'          => 'report',
-            'callback'      => [ $this, 'reporting_page' ],
-            'position'      => 99,
-        ] );
-
-        erp_add_submenu( 'hr', 'report', [
-            'title'         => __( 'Age Profile', 'erp' ),
-            'capability'    => 'erp_hr_manager',
-            'slug'          => 'report&type=age-profile',
-            'callback'      => [ $this, 'reporting_page' ],
-            'position'      => 5,
-        ] );
-
-        erp_add_submenu( 'hr', 'report', [
-            'title'         => __( 'Salary History', 'erp' ),
-            'capability'    => 'erp_hr_manager',
-            'slug'          => 'report&type=salary-history',
-            'callback'      => [ $this, 'reporting_page' ],
-            'position'      => 5,
-        ] );
-
-        erp_add_submenu( 'hr', 'report', [
-            'title'         => __( 'Gender Profile', 'erp' ),
-            'capability'    => 'erp_hr_manager',
-            'slug'          => 'report&type=gender-profile',
-            'callback'      => [ $this, 'reporting_page' ],
-            'position'      => 5,
-        ] );
-
-        erp_add_submenu( 'hr', 'report', [
-            'title'         => __( 'Years of Service', 'erp' ),
-            'capability'    => 'erp_hr_manager',
-            'slug'          => 'report&type=years-of-service',
-            'callback'      => [ $this, 'reporting_page' ],
-            'position'      => 5,
-        ] );
-
-        erp_add_submenu( 'hr', 'report', [
-            'title'         => __( 'Head Count', 'erp' ),
-            'capability'    => 'erp_hr_manager',
-            'slug'          => 'report&type=headcount',
-            'callback'      => [ $this, 'reporting_page' ],
-            'position'      => 5,
-        ] );
-
-        erp_add_submenu( 'hr', 'report', [
-            'title'         => __( 'Leaves', 'erp' ),
-            'capability'    => 'erp_hr_manager',
-            'slug'          => 'report&type=leaves',
-            'callback'      => [ $this, 'reporting_page' ],
-            'position'      => 5,
-        ] );
-
-        erp_add_menu( 'hr', [
             'title'         => __( '<span class="erp-help">Help</span>', 'erp' ),
             'capability'    => 'erp_hr_manager',
             'slug'          => 'help',
@@ -208,7 +152,11 @@ class Admin_Menu {
             $callback = $menu[ $section ]['submenu'][ $sub ]['callback'];
         }
 
-        erp_render_menu( $component );
+        if( $section == 'leave' && isset( $_GET['sub-section'] ) && $_GET['sub-section'] == 'report') {
+           
+        } else {
+            erp_render_menu( $component );
+        }
 
         call_user_func( $callback );
     }
@@ -477,7 +425,9 @@ class Admin_Menu {
             case 'new':
                 include WPERP_HRM_VIEWS . '/leave/new-request.php';
                 break;
-
+            case 'report':
+                include WPERP_HRM_VIEWS . '/leave/leave-report.php';
+                break;
             default:
                 include WPERP_HRM_VIEWS . '/leave/requests.php';
                 break;

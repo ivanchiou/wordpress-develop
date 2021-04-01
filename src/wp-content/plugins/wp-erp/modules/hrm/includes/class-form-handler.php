@@ -371,7 +371,7 @@ class Form_Handler {
                 
                 case 'pre_approved':
                     $status     = 5;
-                    $comment    = __( '1st Level Approved from bulk action', 'erp' );
+                    $comment    = __( '1st Level Approval from bulk action', 'erp' );
                     break;      
 
                 case 'reject':

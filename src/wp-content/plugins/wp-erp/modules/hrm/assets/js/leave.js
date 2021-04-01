@@ -626,6 +626,8 @@
                     leaveWrap = $('div.erp-hr-leave-reqs-wrap'),
                     leavetypewrap = leaveWrap.find('.erp-hr-leave-type-wrapper')
 
+                if(leavetypewrap == undefined) return;
+                
                 leavetypewrap.html('');
 
                 if ( $('#erp-hr-leave-req-employee-id').val() == 0 ) {
