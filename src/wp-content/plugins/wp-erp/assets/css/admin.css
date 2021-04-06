@@ -1940,10 +1940,10 @@ table.leaves td p {
   margin: 2px 0 0;
 }
 table.leaves th#name {
-  width: 200px;
+  width: 150px;
 }
 table.leaves th#policy {
-  width: 120px;
+  width: 100px;
 }
 table.leaves th#available {
   width: 75px;
@@ -1953,14 +1953,14 @@ table.leaves th#request {
 }
 table.leaves th#taken_year,
 table.leaves td#taken_year {
-  width: 150px;
+  width: 120px;
 }
 table.leaves th#status,
 table.leaves td#status {
   width: 100px;
 }
 table.leaves th#reason {
-  width: 250px;
+  width: 100px;
 }
 table.leaves th#approved_by {
   width: 150px;
