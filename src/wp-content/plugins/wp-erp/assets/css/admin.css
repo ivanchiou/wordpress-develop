@@ -4652,6 +4652,12 @@ div.erp-nav-container.--show-secondary .-secondary {
   margin-right: 20px;
 }
 
+.erp-leave-report-flex > span {
+  display: flex;
+  width: fit-content;
+  margin: 0 auto;
+}
+
 .erp-modal .content .row.erp-leave-flex label {
   min-width: 45px;
 }
@@ -4660,4 +4666,44 @@ div.erp-nav-container.--show-secondary .-secondary {
   .erp-modal .content .row.erp-leave-flex label {
     min-width: 130px;
   }
+}
+
+.erp-hr-leave-report {
+  width: 100%;
+  max-width: 1024px;
+}
+
+.erp-hr-leave-report .erp-font-bold {
+  font-weight: bold
+}
+
+.erp-report-table, .erp-report-table th, .erp-report-table td {
+  border: 1px solid black;
+}
+
+.erp-report-table {
+  border-collapse: collapse;
+}
+
+.erp-report-table th {
+  background: #000000;
+  color: #ffffff;
+  text-align: left;
+}
+
+.erp-report-table td {
+  text-align: left;
+  vertical-align: top;
+}
+
+.erp-report-table td input[type=text],
+.erp-report-table td input[type=number] {
+  border: 0px;
+  background: transparent;
+  font-weight: bold;
+  font-size: medium;
+}
+
+.erp-report-table td.erp-report-empty-value {
+  height: 50px;
 }

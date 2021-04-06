@@ -1731,8 +1731,8 @@ function erp_hr_leave_request_update_status( $request_id, $status, $comments = '
         case 2: // pending
         case 3: // rejected
         case 4: // forwarded
-        case 5:
-            if ( $status === 1 ) { // approve this request
+        case 5: // pre-approved
+            if ( $status === 1) { // approve this request
                 // 0. check if we are in the same financial year
                 $f_year_start = $request->entitlement->financial_year->start_date;
                 $f_year_end   = $request->entitlement->financial_year->end_date;
@@ -1822,7 +1822,7 @@ function erp_hr_leave_request_update_status( $request_id, $status, $comments = '
                     $unpaid_leave_data['leave_approval_status_id'] = $approval_status->id;
                     $unpaid_leave                                  = Leaves_Unpaid::create( $unpaid_leave_data );
                 }
-            } elseif ( $status === 3 ) { // reject this request
+            } elseif ( $status === 3 || $status === 5 ) { // reject this request
                 // 1. send data to leave approval status table
                 $approval_status_data['message'] = $comments;
                 $approval_status                 = Leave_Approval_Status::create( $approval_status_data );
