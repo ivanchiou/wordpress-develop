@@ -1922,20 +1922,13 @@ function erp_hr_delete_leave_request( $request_id ) {
  * @return array|string
  */
 function erp_hr_leave_request_get_statuses( $status = false ) {
-    $status_options = [
+    $statuses = apply_filters( 'erp_hr_leave_approval_statuses', [
         'all' => esc_attr__( 'All', 'erp' ),    
-        '1'   => esc_attr__( 'Approved', 'erp' )
-    ];
-
-    if (current_user_can( 'administrator' ) || current_user_can( '1stapprover' ) || current_user_can( 'approver' )) {
-        $status_options['2'] = esc_attr__( 'Pending', 'erp' );  
-    }
-    if (current_user_can( 'administrator' ) || current_user_can( 'approver' )) {
-        $status_options['5'] = esc_attr__( '1st Level Approved', 'erp' );
-    }   
-    $status_options['3'] = esc_attr__( 'Rejected', 'erp' );
-
-    $statuses = apply_filters( 'erp_hr_leave_approval_statuses', $status_options);
+        '1'   => esc_attr__( 'Approved', 'erp' ),
+        '5'   => esc_attr__( '1st Level Approved', 'erp' ),
+        '2'   => esc_attr__( 'Pending', 'erp' ),
+        '3'   => esc_attr__( 'Rejected', 'erp' ),
+    ] );
 
     if ( false !== $status && array_key_exists( $status, $statuses ) ) {
         return $statuses[ $status ];

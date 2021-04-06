@@ -302,15 +302,24 @@ class Leave_Requests_List_Table extends \WP_List_Table {
         }
 
         if ( $item->status == '2' || $item->status == '4' ) {
-            $actions['pre_approved']   = sprintf( '<a class="erp-hr-leave-pre-approve-btn" data-id="%s" href="%s">%s</a>', $item->id, $pre_approve_url, __( '1st Level Approval', 'erp' ) );
-            $actions['reject']     = sprintf( '<a class="erp-hr-leave-reject-btn" data-id="%s" href="%s">%s</a>', $item->id, $reject_url, __( 'Reject', 'erp' ) );
+            $user_id = get_current_user_id();
+            if ($user_id === 1 || current_user_can( '1stapprover' ) || current_user_can( 'approver' )) {
+                $actions['pre_approved']   = sprintf( '<a class="erp-hr-leave-pre-approve-btn" data-id="%s" href="%s">%s</a>', $item->id, $pre_approve_url, __( '1st Level Approval', 'erp' ) );
+                $actions['reject']     = sprintf( '<a class="erp-hr-leave-reject-btn" data-id="%s" href="%s">%s</a>', $item->id, $reject_url, __( 'Reject', 'erp' ) );
+            }
         } else if ( $item->status == '5' || $item->status == '4' ) {
-            $actions['approved']   = sprintf( '<a class="erp-hr-leave-approve-btn" data-id="%s" href="%s">%s</a>', $item->id, $approve_url, __( 'Final Approval', 'erp' ) );
-            $actions['reject']     = sprintf( '<a class="erp-hr-leave-reject-btn" data-id="%s" href="%s">%s</a>', $item->id, $reject_url, __( 'Reject', 'erp' ) );
+            $user_id = get_current_user_id();
+            if ($user_id === 1 || current_user_can( 'approver' )) {
+                $actions['approved']   = sprintf( '<a class="erp-hr-leave-approve-btn" data-id="%s" href="%s">%s</a>', $item->id, $approve_url, __( 'Final Approval', 'erp' ) );
+            }
+            if ($user_id === 1 || current_user_can( '1stapprover' ) || current_user_can( 'approver' )) {
+                $actions['reject']     = sprintf( '<a class="erp-hr-leave-reject-btn" data-id="%s" href="%s">%s</a>', $item->id, $reject_url, __( 'Reject', 'erp' ) );                
+            }
         } elseif ( $item->status == '1' ) {
-            $actions['reject']   = sprintf( '<a class="erp-hr-leave-reject-btn" data-id="%s" href="%s">%s</a>', $item->id, $reject_url, __( 'Reject', 'erp' ) );
-        } elseif ( $item->status == '3' ) {
-            $actions['approved']   = sprintf( '<a class="erp-hr-leave-approve-btn" data-id="%s" href="%s">%s</a>', $item->id, $approve_url, __( 'Approve', 'erp' ) );
+            $user_id = get_current_user_id();
+            if ($user_id === 1 || current_user_can( 'approver' )) {
+                $actions['reject']   = sprintf( '<a class="erp-hr-leave-reject-btn" data-id="%s" href="%s">%s</a>', $item->id, $reject_url, __( 'Reject', 'erp' ) );
+            }
         }
 
         return sprintf(
