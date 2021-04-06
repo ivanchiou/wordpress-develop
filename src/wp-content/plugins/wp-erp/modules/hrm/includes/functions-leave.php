@@ -1565,8 +1565,10 @@ function erp_hr_leave_get_requests_count( $f_year ) {
 
         if ( is_array( $total_leave_count ) && ! empty( $total_leave_count ) ) {
             foreach ( $total_leave_count as $item ) {
-                $counts[ $item['id'] ]['count'] = $item['count'];
-                $total += $item['count'];
+                if(isset($counts[ $item['id'] ])) {
+                    $counts[ $item['id'] ]['count'] = $item['count'];
+                    $total += $item['count'];
+                }
             }
         }
 
@@ -1920,13 +1922,20 @@ function erp_hr_delete_leave_request( $request_id ) {
  * @return array|string
  */
 function erp_hr_leave_request_get_statuses( $status = false ) {
-    $statuses = apply_filters( 'erp_hr_leave_approval_statuses', [
-        'all' => esc_attr__( 'All', 'erp' ),
-        '5'   => esc_attr__( '1st Level Approved', 'erp' ),       
-        '1'   => esc_attr__( 'Approved', 'erp' ),
-        '2'   => esc_attr__( 'Pending', 'erp' ),
-        '3'   => esc_attr__( 'Rejected', 'erp' ),
-    ] );
+    $status_options = [
+        'all' => esc_attr__( 'All', 'erp' ),    
+        '1'   => esc_attr__( 'Approved', 'erp' )
+    ];
+
+    if (current_user_can( 'administrator' ) || current_user_can( '1stapprover' ) || current_user_can( 'approver' )) {
+        $status_options['2'] = esc_attr__( 'Pending', 'erp' );  
+    }
+    if (current_user_can( 'administrator' ) || current_user_can( 'approver' )) {
+        $status_options['5'] = esc_attr__( '1st Level Approved', 'erp' );
+    }   
+    $status_options['3'] = esc_attr__( 'Rejected', 'erp' );
+
+    $statuses = apply_filters( 'erp_hr_leave_approval_statuses', $status_options);
 
     if ( false !== $status && array_key_exists( $status, $statuses ) ) {
         return $statuses[ $status ];
