@@ -71,7 +71,6 @@
                             <?php } ?>
                         </ul>
                     </div><!-- .erp-user-info -->
-
                     <div class="erp-area-right erp-hide-print">
                         <div class="postbox leads-actions">
                             <h3 class="hndle"><span><?php esc_html_e( 'Actions', 'erp' ); ?></span></h3>
@@ -94,11 +93,13 @@
                             </div>
                         </div><!-- .postbox -->
                     </div><!-- .leads-right -->
-
                     <?php do_action( 'erp_hr_employee_single_after_info', $employee ); ?>
 
                 </div><!-- .erp-profile-top -->
-
+                <div class="erp-user-signature">
+                    <h3><span><?php esc_html_e( 'Your Signature', 'erp' ); ?></span></h3>
+                    <?php echo $employee->get_signature( 150 ); ?>
+                </div>
                 <?php
                 $active_tab = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unslash( $_GET['tab'] ) ) : 'general';
                 $tabs       = apply_filters( 'erp_hr_employee_single_tabs', [

@@ -16,10 +16,13 @@ if(isset( $_GET['user_id'] ) && isset( $_GET['leave_id'] )) {
 
     $erp_user = WeDevs\ORM\WP\User::where( 'ID', $user_id)->first();
     $erp_employee_user = WeDevs\ERP\HRM\Models\Employee::where( 'user_id', $user_id)->first();
+    $erp_employee_object = new \WeDevs\ERP\HRM\Employee( intval($user_id) );
     $erp_leave_1st_approval = WeDevs\ERP\HRM\Models\Leave_Approval_Status::where( 'leave_request_id', $leave_id)->where( 'approval_status_id', 5 )->first();
     $erp_leave_1st_approval_user = WeDevs\ORM\WP\User::where( 'ID', $erp_leave_1st_approval->approved_by)->first();
+    $erp_leave_1st_approval_object = new \WeDevs\ERP\HRM\Employee( intval($erp_leave_1st_approval->approved_by) );
     $erp_leave_final_approval = WeDevs\ERP\HRM\Models\Leave_Approval_Status::where( 'leave_request_id', $leave_id)->where( 'approval_status_id', 1 )->first();
     $erp_leave_final_approval_user = WeDevs\ORM\WP\User::where( 'ID', $erp_leave_final_approval->approved_by)->first();
+    $erp_leave_final_approval_object = new \WeDevs\ERP\HRM\Employee( intval($erp_leave_final_approval->approved_by) );
 
     $employee_types     = erp_hr_get_assign_policy_from_entitlement($user_id);
     $types              = $employee_types ? array_unique( $employee_types ) : [];
@@ -140,6 +143,7 @@ if(isset( $_GET['user_id'] ) && isset( $_GET['leave_id'] )) {
                 <?php erp_html_form_label(
                     __( 'Signature', 'erp' )
                 ); ?>
+                <?php echo $erp_employee_object->get_signature( 150 ); ?>
             </td>
             <td class="row">    
                 <?php erp_html_form_input( [
@@ -333,6 +337,7 @@ if(isset( $_GET['user_id'] ) && isset( $_GET['leave_id'] )) {
                 <?php erp_html_form_label(
                     __( 'Signature', 'erp' )
                 ); ?>
+                <?php echo $erp_leave_1st_approval_object->get_signature( 150 ); ?>
             </td>
             <td class="row erp-report-empty-value">
                 <?php erp_html_form_input( [
@@ -370,6 +375,7 @@ if(isset( $_GET['user_id'] ) && isset( $_GET['leave_id'] )) {
                 <?php erp_html_form_label(
                     __( 'Signature', 'erp' )
                 ); ?>
+                <?php echo $erp_leave_final_approval_object->get_signature( 150 ); ?>
             </td>
             <td class="row erp-report-empty-value">
                 <?php erp_html_form_input( [

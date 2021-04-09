@@ -4702,6 +4702,7 @@ div.erp-nav-container.--show-secondary .-secondary {
   background: transparent;
   font-weight: bold;
   font-size: medium;
+  width: -webkit-fill-available;
 }
 
 .erp-report-table td.erp-report-empty-value {

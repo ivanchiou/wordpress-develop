@@ -746,6 +746,14 @@ class Employee {
         return $avatar;
     }
 
+    public function get_signature( $size = 32 ) {
+        if ( $this->erp_user->signature ) {
+            return sprintf( '<img src="data:image/jpeg;base64,%1$s" alt="your signature" height="auto" width="%2$s" />', base64_encode($this->erp_user->signature), $size );
+        }
+
+        return null;
+    }    
+
     /**
      * Get single employee page view url
      *
