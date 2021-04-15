@@ -648,12 +648,42 @@
                     },
                     success: function(resp) {
                         leavetypewrap.html( resp ).hide().fadeIn();
-                        leaveWrap.find( 'input[type="text"], textarea').removeAttr('disabled');
+                        leaveWrap.find( 'input[type="text"], input[type="number"], input[type="radio"], select, textarea').removeAttr('disabled');
                     },
                     error: function(resp) {
                         leavetypewrap.html( '<div class="notice error"><p>' + resp + '</p></div>' ).hide().fadeIn();
                     }
                 } );
+
+                wp.ajax.send( 'erp-hr-emp-get', {
+                    data: {
+                        id: $('#erp-hr-leave-req-employee-id').val(),
+                        _wpnonce: wpErpHr.nonce
+                    },
+                    success: function(response) {
+                        if(response && response.work) {
+                            wp.ajax.send( 'erp-hr-get-desig', {
+                                data: {
+                                    id: parseInt(response.work.designation, 10),
+                                    _wpnonce: wpErpHr.nonce
+                                },
+                                success: function(response) {
+                                    $('#employee_position').val( response.name );
+                                }
+                            });
+
+                            wp.ajax.send( 'erp-hr-get-dept', {
+                                data: {
+                                    id: parseInt(response.work.department, 10),
+                                    _wpnonce: wpErpHr.nonce
+                                },
+                                success: function(response) {
+                                    $('#employee_department').val( response.name );
+                                }
+                            });                            
+                        }                    
+                    }
+                });         
             },
 
             setAvailableDays: function() {

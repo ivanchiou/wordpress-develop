@@ -6,6 +6,7 @@ use stdClass;
 use WeDevs\ERP\ERP_Errors;
 use WeDevs\ERP\HRM\Models\Financial_Year;
 use WeDevs\ERP\HRM\Models\Leave_Policy;
+use WeDevs\ERP\HRM\Models\Leave_Request;
 use WP_Error;
 
 /**
@@ -803,14 +804,14 @@ class Form_Handler {
 
         $errors = new ERP_Errors( 'new_leave_request' );
 
-        if ( empty( trim( sanitize_text_field( wp_unslash( $_POST['leave_reason'] ) ) ) ) ) {
+        /*if ( empty( trim( sanitize_text_field( wp_unslash( $_POST['leave_reason'] ) ) ) ) ) {
             $errors->add( esc_attr__( 'Leave reason field can not be blank.', 'erp' ) );
             $errors->save();
 
             $redirect_to = admin_url( 'admin.php?page=erp-hr&section=leave&view=new&error=new_leave_request' );
             wp_redirect( $redirect_to );
             exit;
-        }
+        }*/
 
         $employee_id  = isset( $_POST['employee_id'] ) ? intval( $_POST['employee_id'] ) : 0;
         $leave_policy = isset( $_POST['leave_policy'] ) ? intval( $_POST['leave_policy'] ) : 0;
@@ -819,6 +820,15 @@ class Form_Handler {
         $start_date = isset( $_POST['leave_from'] ) ? sanitize_text_field( wp_unslash( $_POST['leave_from'] . ' 00:00:00' ) ) : date_i18n( 'Y-m-d 00:00:00' );
         $end_date   = isset( $_POST['leave_to'] ) ? sanitize_text_field( wp_unslash( $_POST['leave_to'] . ' 23:59:59' ) ) : date_i18n( 'Y-m-d 23:59:59' );
 
+        $taken_year = isset( $_POST['taken_year'] ) ? sanitize_text_field( wp_unslash( $_POST['taken_year']) ) : erp_current_datetime()->format( 'Y' );
+        $days_in_federation   = isset( $_POST['days_in_federation'] ) ? sanitize_text_field( wp_unslash( $_POST['days_in_federation']) ) : '0.0';
+        $days_out_federation   = isset( $_POST['days_out_federation'] ) ? sanitize_text_field( wp_unslash( $_POST['days_out_federation']) ) : '0.0';
+        $contact_no   = isset( $_POST['contact_no'] ) ? sanitize_text_field( wp_unslash( $_POST['contact_no']) ) : '';
+        $address_on_leave = isset( $_POST['address_on_leave'] ) ? wp_strip_all_tags( sanitize_text_field( wp_unslash( $_POST['address_on_leave'] ) ) ) : '';
+        
+        $substitute_required   = isset( $_POST['substitute_required'] ) ? sanitize_text_field( wp_unslash( $_POST['substitute_required']) ) : 0;
+        $substitute_type   = Leave_Request::get_substitute_type_enum()[isset( $_POST['substitute_type'] ) ? sanitize_text_field( wp_unslash( $_POST['substitute_type']) ) : 0];        
+
         $leave_reason = isset( $_POST['leave_reason'] ) ? strip_tags( sanitize_text_field( wp_unslash( $_POST['leave_reason'] ) ) ) : '';
 
         $insert = erp_hr_leave_insert_request( [
@@ -826,6 +836,13 @@ class Form_Handler {
             'leave_policy' => $leave_policy,
             'start_date'   => $start_date,
             'end_date'     => $end_date,
+            'taken_year'   => $taken_year,
+            'days_in_federation'    => $days_in_federation,
+            'days_out_federation'   => $days_out_federation,
+            'contact_no'   => $contact_no,
+            'address_on_leave' => $address_on_leave,
+            'substitute_required' => $substitute_required,
+            'substitute_type' => $substitute_type,
             'reason'       => $leave_reason,
         ] );
 

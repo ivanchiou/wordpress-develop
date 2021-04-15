@@ -7,6 +7,7 @@
         <div class="inside">
             <?php
             use WeDevs\ERP\HRM\Models\Financial_Year;
+            use WeDevs\ERP\HRM\Models\Leave_Request;
 
             if ( isset( $_GET['insert_error'] ) && $_GET['insert_error'] !== '' ) {
                 $errors = new \WeDevs\ERP\ERP_Errors( sanitize_text_field( wp_unslash( $_GET['insert_error'] ) ) );
@@ -16,6 +17,8 @@
             }
             $financial_years = [];
             $current_f_year  = erp_hr_get_financial_year_from_date();
+            $substitute_required = array(1 => "Yes", 0 => "No");
+            $substitute_type    = Leave_Request::get_substitute_type_enum();
 
             foreach ( Financial_Year::all() as $f_year ) {
                 if ( $f_year['start_date'] < $current_f_year->start_date ) {
@@ -50,25 +53,70 @@
                 }?>
 
                 <?php if ( current_user_can( 'erp_leave_create_request' ) ) { ?>
-                    <div class="row">
-                        <?php erp_html_form_input( [
-                            'label'    => __( 'Employee', 'erp' ),
-                            'name'     => 'employee_id',
-                            'id'       => 'erp-hr-leave-req-employee-id',
-                            'value'    => '',
-                            'class'    => 'erp-select2',
-                            'required' => true,
-                            'type'     => 'select',
-                            'options'  => erp_hr_get_employees_dropdown_raw(),
-                        ] ); ?>
+                    <div class="row two-col">
+                        <div class="cols">
+                            <?php erp_html_form_input( [
+                                'label'    => __( 'Employee', 'erp' ),
+                                'name'     => 'employee_id',
+                                'id'       => 'erp-hr-leave-req-employee-id',
+                                'value'    => '',
+                                'class'    => 'erp-select2',
+                                'required' => true,
+                                'type'     => 'select',
+                                'options'  => erp_hr_get_employees_dropdown_raw(),
+                            ] ); ?>
+                        </div>
+                        <div class="cols">  
+                            <?php erp_html_form_input( [
+                                'label'       => __( 'Date', 'erp' ),
+                                'name'        => 'date',
+                                'value'       => erp_current_datetime()->format( 'Y-m-d' ),
+                                'required'    => true,
+                                'disabled'    => true,
+                                'readonly'    => true
+                            ] ); ?>
+                        </div>
                     </div>
                 <?php } ?>
-
                 <div class="row erp-hide erp-hr-leave-type-wrapper"></div>
 
-                <?php do_action( 'erp_hr_leave_request_form_middle' ); ?>
+                <?php do_action( 'erp_hr_leave_request_form_middle' ); ?>                
+                <?php if ( current_user_can( 'erp_leave_create_request' ) ) { ?>
+                    <div class="row two-col">
+                        <div class="cols">
+                            <?php erp_html_form_input( [
+                                'label'       => __( 'Post', 'erp' ),
+                                'name'        => 'employee_position',
+                                'id'          => 'employee_position',
+                                'required'    => true,
+                                'disabled'    => true,
+                                'readonly'    => true
+                            ] ); ?>
+                        </div>
+                        <div class="cols">
+                            <?php erp_html_form_input( [
+                                'label'       => __( 'Ministry/Department', 'erp' ),
+                                'name'        => 'employee_department',
+                                'id'          => 'employee_department',
+                                'required'    => true,
+                                'disabled'    => true,
+                                'readonly'    => true,                   
+                            ] ); ?>
+                        </div>             
+                    </div>              
+                <?php } ?>
 
                 <div class="row two-col">
+                    <div>
+                        <?php erp_html_form_input( [
+                            'label'       => __( 'Taken for the year', 'erp' ),
+                            'name'        => 'taken_year',
+                            'value'       => date("Y"),
+                            'type'        => 'number',
+                            'required'    => true,
+                            'disabled'    => true,
+                        ] ); ?>
+                    </div>                    
                     <div class="cols">
                         <?php erp_html_form_input( [
                             'label'       => __( 'From', 'erp' ),
@@ -102,12 +150,76 @@
 
                 <div class="row erp-hr-leave-req-show-days show-days"></div>
 
+                <div class="row two-col">
+                    <div class="cols">
+                        <?php erp_html_form_input( [
+                            'label'       => __( 'in the Federation', 'erp' ),
+                            'name'        => 'days_in_federation',
+                            'type'        => 'number',
+                            'required'    => false,
+                            'disabled'    => true,
+                        ] ); ?>
+                    </div>
+                    <div class="cols">
+                        <?php erp_html_form_input( [
+                            'label'       => __( 'outside the Federation', 'erp' ),
+                            'name'        => 'days_out_federation',
+                            'type'        => 'number',
+                            'required'    => false,
+                            'disabled'    => true,
+                        ] ); ?>
+                    </div>
+                    <div>
+                        <?php erp_html_form_input( [
+                            'label'       => __( 'Contact No.', 'erp' ),
+                            'name'        => 'contact_no',
+                            'required'    => false,
+                            'disabled'    => true,
+                        ] ); ?>
+                    </div>        
+                </div>
+                
+                <div class="row">
+                    <?php erp_html_form_input( [
+                        'label'       => __( 'Address while on leave', 'erp' ),
+                        'tooltip'     => 'if outside the Federation',
+                        'name'        => 'address_on_leave',
+                        'type'        => 'textarea',
+                        'required'    => false,
+                        'custom_attr' => [ 'cols' => 30, 'rows' => 3, 'disabled' => 'disabled'],
+                    ] ); ?>
+                </div>
+
+                <div class="row two-col">
+                    <div class="cols">
+                        <?php erp_html_form_input( [
+                            'label'       => __( 'Substitute required?', 'erp' ),
+                            'name'        => 'substitute_required',
+                            'type'        => 'radio',
+                            'required'    => false,
+                            'options'     => $substitute_required,
+                            'disabled'    => true,
+                        ] ); ?>
+                    </div>
+                    <div class="cols">
+                        <?php erp_html_form_input( [
+                            'label'       => __( 'Substitute Type', 'erp' ),
+                            'name'     => 'substitute_type',
+                            'value'    => '',
+                            'required' => false,
+                            'type'     => 'select',
+                            'options'  => $substitute_type,
+                            'disabled'    => true,
+                        ] ); ?>
+                    </div>      
+                </div>                
+
                 <div class="row">
                     <?php erp_html_form_input( [
                         'label'       => __( 'Reason', 'erp' ),
                         'name'        => 'leave_reason',
                         'type'        => 'textarea',
-                        'required'    => true,
+                        'required'    => false,
                         'custom_attr' => [ 'cols' => 30, 'rows' => 3, 'disabled' => 'disabled' ],
                     ] ); ?>
                 </div>
