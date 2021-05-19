@@ -42,6 +42,7 @@
             $( '.erp-hr-leave-requests' ).on( 'click', '.erp-hr-leave-pre-approve-btn', self, this.leave.preApprove );
             $( '.erp-hr-leave-requests' ).on( 'click', '.erp-hr-leave-reject-btn', self, this.leave.reject );
             $( '.request-list-table' ).on( 'click', 'a.submitdelete', self, this.leave.remove );
+            $( '.show-days' ).on( 'click', '.remove-request-date', self, this.leave.removeRequestDate );
 
             // Leaave report custom filter
             $( '#filter_year' ).on( 'change', self, this.customFilterLeaveReport );
@@ -519,7 +520,6 @@
         leave: {
             takeLeave: function(e) {
                 e.preventDefault();
-
                 $.erpPopup({
                     title: wpErpHr.popup.new_leave_req,
                     button: wpErpHr.popup.take_leave,
@@ -528,6 +528,7 @@
                     extraClass: 'medium',
                     onReady: function() {
                         Leave.initDateField();
+                        $( '.show-days' ).on( 'click', '.remove-request-date', Leave, Leave.leave.removeRequestDate );
                     },
                     onSubmit: function(modal) {
                         $( 'button[type=submit]', '.erp-modal' ).attr( 'disabled', 'disabled' );
@@ -559,7 +560,20 @@
                 });
                 Leave.leave.setPolicy();
             },
+            removeRequestDate: function(e) {
+                if (confirm('Are you sure you want to remove the date?')) {
+                    $(this).closest('.request-date-row').remove();
+                    let matchArray = $('.show-days > .table-wrap > .total > .total-days').val().match(/\d+/g);
+                    if(matchArray && matchArray[0]) {
+                        let number = parseInt(matchArray[0], 10) - 1;
+                        $('.show-days > .table-wrap > .total > .total-days').val(number+' days');
 
+                        $(':submit').on("click", function() {
+                            return confirm('It will be separated into multiple leave applications, do you agree?');
+                        });
+                    }
+                }
+            },
             requestDates: function(e) {
                 var from = $('#erp-hr-leave-req-from-date').val(),
                     to = $('#erp-hr-leave-req-to-date').val(),

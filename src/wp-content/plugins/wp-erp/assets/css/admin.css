@@ -2006,6 +2006,10 @@ table.leaves td.column-status .status-5 {
 .erp-hr-leave-request-new .show-days {
   width: 97%;
 }
+.erp-hr-leave-request-new .show-days .remove-request-date {
+  cursor: pointer;
+  position: relative;
+}
 .erp-hr-leave-request-new .show-days .table-wrap {
   border: 1px solid #ddd;
 }

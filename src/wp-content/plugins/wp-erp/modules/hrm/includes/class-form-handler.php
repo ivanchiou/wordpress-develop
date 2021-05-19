@@ -793,7 +793,7 @@ class Form_Handler {
      *
      * @return void
      */
-    public function leave_request() {
+    public function leave_request($array=array(), $start_date = '', $end_date = '', $from_to_total_days = 0, $total_days = 0, $redirect = true) {
         if ( !isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ) ), 'erp-leave-req-new' ) ) {
             die( esc_html__( 'Something went wrong!', 'erp' ) );
         }
@@ -817,8 +817,40 @@ class Form_Handler {
         $leave_policy = isset( $_POST['leave_policy'] ) ? intval( $_POST['leave_policy'] ) : 0;
 
         // @todo: date format may need to be changed when partial leave introduced
-        $start_date = isset( $_POST['leave_from'] ) ? sanitize_text_field( wp_unslash( $_POST['leave_from'] . ' 00:00:00' ) ) : date_i18n( 'Y-m-d 00:00:00' );
-        $end_date   = isset( $_POST['leave_to'] ) ? sanitize_text_field( wp_unslash( $_POST['leave_to'] . ' 23:59:59' ) ) : date_i18n( 'Y-m-d 23:59:59' );
+
+        //wp_die( esc_html__( $start_date.':'.$end_date.':'.$from_to_total_days.':'.$total_days, 'erp' ) );
+        if( $start_date == '' ) {
+            $start_date = isset( $_POST['leave_from'] ) ? sanitize_text_field( wp_unslash( $_POST['leave_from'] . ' 00:00:00' ) ) : date_i18n( 'Y-m-d 00:00:00' );
+        }
+        if( $end_date == '' ) {
+            $end_date = isset( $_POST['leave_to'] ) ? sanitize_text_field( wp_unslash( $_POST['leave_to'] . ' 23:59:59' ) ) : date_i18n( 'Y-m-d 23:59:59' );
+        }
+
+        if( $from_to_total_days == 0 ) {
+            $from_to_total_days = isset( $_POST['from_to_total_days'] ) ? sanitize_text_field( wp_unslash( $_POST['from_to_total_days']) ) : 0;
+        }
+
+        if( $total_days == 0 ) {
+            $total_days = isset( $_POST['total_days'] ) ? sanitize_text_field( wp_unslash( $_POST['total_days']) ) : 0;
+        }
+
+        $reset_start_date = true;
+        if ( $from_to_total_days !== $total_days) {
+            $days_count = 0;
+            for ($index = 0; $index < $from_to_total_days; $index++) {
+                if (isset( $_POST['days_'.$index.'_date']) && isset( $_POST['days_'.$index.'_count']) && $_POST['days_'.$index.'_count'] == 1 ) {
+                    if($reset_start_date) {
+                        $start_date = date("Y-m-d 00:00:00", strtotime(sanitize_text_field( wp_unslash( $_POST['days_'.$index.'_date']))));
+                        $reset_start_date = false;
+                    }
+                    $end_date = date("Y-m-d 23:59:59", strtotime(sanitize_text_field( wp_unslash( $_POST['days_'.$index.'_date']))));
+                    $days_count++;
+                } else {
+                    $this->leave_request(array(), $start_date, $end_date, $days_count, $days_count, false);
+                    $reset_start_date = true;
+                }
+            }
+        }
 
         $taken_year = isset( $_POST['taken_year'] ) ? sanitize_text_field( wp_unslash( $_POST['taken_year']) ) : erp_current_datetime()->format( 'Y' );
         $days_in_federation   = isset( $_POST['days_in_federation'] ) ? sanitize_text_field( wp_unslash( $_POST['days_in_federation']) ) : '0.0';
@@ -861,8 +893,10 @@ class Form_Handler {
             $redirect_to = admin_url( 'admin.php?page=erp-hr&section=leave&sub-section=leave-requests&status=2' . $f_year_text );
         }
 
-        wp_redirect( $redirect_to );
-        exit;
+        if( $redirect ) {
+            wp_redirect( $redirect_to );
+            exit;
+        }
     }
 
     /**
