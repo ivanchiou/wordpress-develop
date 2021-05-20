@@ -568,6 +568,7 @@
                         let number = parseInt(matchArray[0], 10) - 1;
                         $('.show-days > .table-wrap > .total > .total-days').val(number+' days');
 
+                        $(':submit').off('click');   
                         $(':submit').on("click", function() {
                             return confirm('It will be separated into multiple leave applications, do you agree?');
                         });
