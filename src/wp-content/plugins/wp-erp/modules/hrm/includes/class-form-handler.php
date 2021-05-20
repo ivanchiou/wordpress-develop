@@ -845,7 +845,7 @@ class Form_Handler {
                     }
                     $end_date = date("Y-m-d 23:59:59", strtotime(sanitize_text_field( wp_unslash( $_POST['days_'.$index.'_date']))));
                     $days_count++;
-                } else {
+                } else if( $reset_start_date == false ) {
                     $this->leave_request(array(), $start_date, $end_date, $days_count, $days_count, false);
                     $reset_start_date = true;
                 }
