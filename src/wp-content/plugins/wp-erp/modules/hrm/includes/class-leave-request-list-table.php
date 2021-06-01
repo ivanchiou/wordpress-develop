@@ -94,13 +94,16 @@ class Leave_Requests_List_Table extends \WP_List_Table {
             'available'   => __( 'Available', 'erp' ),
             'taken_year'  => __( 'Taken for the year', 'erp' ),
             'status'      => __( 'Status', 'erp' ),
-            'reason'      => __( 'Reason', 'erp' ),
             'approved_by' => __( 'Approved By', 'erp' ),
         ];
 
         if ( isset( $_GET['status'] ) && $_GET['status'] == 1 ) {
             $columns['report'] = __( 'Report', 'erp' );
-            unset($columns['reason']);
+        } else if (isset( $_GET['status'] ) && ($_GET['status'] == 2 || $_GET['status'] == 5)) {
+            $columns['report'] = __( 'Details', 'erp' );
+            if( $_GET['status'] == 2) {
+                unset($columns['approved_by']);
+            }
         }
 
         if ( isset( $_GET['status'] ) && $_GET['status'] == 3 ) {
@@ -215,7 +218,12 @@ class Leave_Requests_List_Table extends \WP_List_Table {
                 return esc_html( $item->message );
 
             case 'report':
-                return sprintf('<a href="admin.php?page=erp-hr&section=leave&sub-section=report&view=report&status=1&leave_id=%s&user_id=%s" target="_blank" class="button button-primary erp-hr-leave-approved-report" id="erp-hr-leave-approved-report">Generate</a>', 
+                if ( $item->status == '1' ) { 
+                    $btn_text = "Generate";
+                } else {
+                    $btn_text = "Browse";
+                }
+                return sprintf('<a href="admin.php?page=erp-hr&section=leave&sub-section=report&view=report&status=1&leave_id=%s&user_id=%s" target="_blank" class="button button-primary erp-hr-leave-approved-report" id="erp-hr-leave-approved-report">'.$btn_text.'</a>', 
                     $item->id,
                     $item->user_id);
 

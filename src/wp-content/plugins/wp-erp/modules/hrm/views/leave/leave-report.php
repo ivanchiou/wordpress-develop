@@ -18,12 +18,15 @@ if(isset( $_GET['user_id'] ) && isset( $_GET['leave_id'] )) {
     $erp_employee_user = WeDevs\ERP\HRM\Models\Employee::where( 'user_id', $user_id)->first();
     $erp_employee_object = new \WeDevs\ERP\HRM\Employee( intval($user_id) );
     $erp_leave_1st_approval = WeDevs\ERP\HRM\Models\Leave_Approval_Status::where( 'leave_request_id', $leave_id)->where( 'approval_status_id', 5 )->first();
-    $erp_leave_1st_approval_user = WeDevs\ORM\WP\User::where( 'ID', $erp_leave_1st_approval->approved_by)->first();
-    $erp_leave_1st_approval_object = new \WeDevs\ERP\HRM\Employee( intval($erp_leave_1st_approval->approved_by) );
+    if ( ! empty( $erp_leave_1st_approval )) {
+        $erp_leave_1st_approval_user = WeDevs\ORM\WP\User::where( 'ID', $erp_leave_1st_approval->approved_by)->first();
+        $erp_leave_1st_approval_object = new \WeDevs\ERP\HRM\Employee( intval($erp_leave_1st_approval->approved_by) );
+    }
     $erp_leave_final_approval = WeDevs\ERP\HRM\Models\Leave_Approval_Status::where( 'leave_request_id', $leave_id)->where( 'approval_status_id', 1 )->first();
-    $erp_leave_final_approval_user = WeDevs\ORM\WP\User::where( 'ID', $erp_leave_final_approval->approved_by)->first();
-    $erp_leave_final_approval_object = new \WeDevs\ERP\HRM\Employee( intval($erp_leave_final_approval->approved_by) );
-
+    if ( ! empty( $erp_leave_final_approval )) {
+        $erp_leave_final_approval_user = WeDevs\ORM\WP\User::where( 'ID', $erp_leave_final_approval->approved_by)->first();
+        $erp_leave_final_approval_object = new \WeDevs\ERP\HRM\Employee( intval($erp_leave_final_approval->approved_by) );
+    }
     $employee_types     = erp_hr_get_assign_policy_from_entitlement($user_id);
     $types              = $employee_types ? array_unique( $employee_types ) : [];
     $financial_years    = [];
@@ -325,28 +328,40 @@ if(isset( $_GET['user_id'] ) && isset( $_GET['leave_id'] )) {
                 <span>(if no use notes box below to explain)</span>
             </td>
             <td class="row" colspan="2">
-                <?php erp_html_form_input( [
-                    'label'       => __( 'Name of Head of Department', 'erp' ),
-                    'name'        => 'sign_head_of_department',
-                    'value'       => $erp_leave_1st_approval_user->display_name,
-                    'required'    => false,
-                    'readonly'    => true
-                ] ); ?>
+                <?php
+                    if(!empty($erp_leave_1st_approval_user)) {
+                        erp_html_form_input( [
+                            'label'       => __( 'Name of Head of Department', 'erp' ),
+                            'name'        => 'sign_head_of_department',
+                            'value'       => $erp_leave_1st_approval_user->display_name,
+                            'required'    => false,
+                            'readonly'    => true
+                        ] );
+                    }
+                ?>
             </td>
             <td class="row erp-report-empty-value">
                 <?php erp_html_form_label(
                     __( 'Signature', 'erp' )
                 ); ?>
-                <?php echo $erp_leave_1st_approval_object->get_signature( 150 ); ?>
+                <?php
+                    if(!empty($erp_leave_1st_approval_object)) {
+                        echo $erp_leave_1st_approval_object->get_signature( 150 );
+                    }
+                ?>
             </td>
             <td class="row erp-report-empty-value">
-                <?php erp_html_form_input( [
-                    'label'       => __( 'Date(dd/mm/yy)', 'erp' ),
-                    'name'        => 'date_head_of_department',
-                    'value'       => $erp_leave_1st_approval->created_at->format( 'Y-m-d' ),
-                    'required'    => false,
-                    'readonly'    => true
-                ] ); ?>
+                <?php
+                    if(!empty($erp_leave_1st_approval)) {
+                        erp_html_form_input( [
+                            'label'       => __( 'Date(dd/mm/yy)', 'erp' ),
+                            'name'        => 'date_head_of_department',
+                            'value'       => $erp_leave_1st_approval->created_at->format( 'Y-m-d' ),
+                            'required'    => false,
+                            'readonly'    => true
+                        ] );
+                    }
+                ?>
             </td>            
         </tr>
         <tr>
@@ -363,28 +378,40 @@ if(isset( $_GET['user_id'] ) && isset( $_GET['leave_id'] )) {
                 ] ); ?>
             </td>
             <td class="row" colspan="2">
-                <?php erp_html_form_input( [
-                    'label'       => __( 'Name of Permanent Secretary', 'erp' ),
-                    'name'        => 'sign_head_of_PS',
-                    'value'       => $erp_leave_final_approval_user->display_name,
-                    'required'    => false,
-                    'readonly'    => true
-                ] ); ?>
+                <?php 
+                    if(!empty($erp_leave_final_approval_user)) {
+                        erp_html_form_input( [
+                        'label'       => __( 'Name of Permanent Secretary', 'erp' ),
+                        'name'        => 'sign_head_of_PS',
+                        'value'       => $erp_leave_final_approval_user->display_name,
+                        'required'    => false,
+                        'readonly'    => true
+                        ] );
+                    } 
+                ?>
             </td>
             <td class="row erp-report-empty-value">
                 <?php erp_html_form_label(
                     __( 'Signature', 'erp' )
                 ); ?>
-                <?php echo $erp_leave_final_approval_object->get_signature( 150 ); ?>
+                <?php 
+                    if(!empty($erp_leave_final_approval_object)) {
+                        echo $erp_leave_final_approval_object->get_signature( 150 ); 
+                    }
+                ?>
             </td>
             <td class="row erp-report-empty-value">
-                <?php erp_html_form_input( [
-                    'label'       => __( 'Date(dd/mm/yy)', 'erp' ),
-                    'name'        => 'date_head_of_PS',
-                    'value'       => $erp_leave_final_approval->created_at->format( 'Y-m-d' ),
-                    'required'    => false,
-                    'readonly'    => true
-                ] ); ?>
+                <?php 
+                    if(!empty($erp_leave_final_approval)) {
+                        erp_html_form_input( [
+                            'label'       => __( 'Date(dd/mm/yy)', 'erp' ),
+                            'name'        => 'date_head_of_PS',
+                            'value'       => $erp_leave_final_approval->created_at->format( 'Y-m-d' ),
+                            'required'    => false,
+                            'readonly'    => true
+                        ] );
+                    }
+                ?>
             </td>            
         </tr>        
         <tr>
