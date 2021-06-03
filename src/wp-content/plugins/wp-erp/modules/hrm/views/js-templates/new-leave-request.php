@@ -121,6 +121,8 @@ foreach ( Designation::all() as $f_designation ) {
                 'name'        => 'taken_year',
                 'value'       => $total_taken_year,
                 'type'        => 'number',
+                'disabled'    => true,
+                'readonly'    => true,                
                 'required'    => true
             ] ); ?>
         </span>
