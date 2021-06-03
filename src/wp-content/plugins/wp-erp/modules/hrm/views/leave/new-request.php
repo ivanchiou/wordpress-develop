@@ -19,6 +19,7 @@
             $current_f_year  = erp_hr_get_financial_year_from_date();
             $substitute_required = array(1 => "Yes", 0 => "No");
             $substitute_type    = Leave_Request::get_substitute_type_enum();
+            $total_taken_year   = Leave_Request::get_total_taken_year();
 
             foreach ( Financial_Year::all() as $f_year ) {
                 if ( $f_year['start_date'] < $current_f_year->start_date ) {
@@ -111,7 +112,7 @@
                         <?php erp_html_form_input( [
                             'label'       => __( 'Taken for the year', 'erp' ),
                             'name'        => 'taken_year',
-                            'value'       => date("Y"),
+                            'value'       => $total_taken_year,
                             'type'        => 'number',
                             'required'    => true,
                             'disabled'    => true,

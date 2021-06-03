@@ -119,4 +119,15 @@ class Leave_Request extends Model {
         }
         return $values;
     }
+
+    public static function get_total_taken_year()  {
+        global $wpdb;
+        $table = $wpdb->prefix . 'erp_hr_leave_requests';
+        $user_id = get_current_user_id();
+        $results = $wpdb->get_results("SELECT COUNT(days) AS total_taken_year FROM {$table} WHERE user_id ={$user_id} AND last_status = '1'");
+
+        foreach( $results as $result ) {
+            return $result->total_taken_year;
+        }
+    }    
 }

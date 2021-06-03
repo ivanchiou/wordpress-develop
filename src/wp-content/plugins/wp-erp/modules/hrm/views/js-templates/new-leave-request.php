@@ -16,7 +16,7 @@ $department = '';
 $designation = '';
 $substitute_required = array(1 => "Yes", 0 => "No");
 $substitute_type    = Leave_Request::get_substitute_type_enum();
-
+$total_taken_year   = Leave_Request::get_total_taken_year();
 $current_f_year = erp_hr_get_financial_year_from_date();
 
 if ( null === $current_f_year ) {
@@ -119,11 +119,11 @@ foreach ( Designation::all() as $f_designation ) {
             <?php erp_html_form_input( [
                 'label'       => __( 'Taken for the year', 'erp' ),
                 'name'        => 'taken_year',
-                'value'       => date("Y"),
+                'value'       => $total_taken_year,
                 'type'        => 'number',
                 'required'    => true
             ] ); ?>
-        </span>        
+        </span>
         <span>
             <?php erp_html_form_input( [
                 'label'       => __( 'From', 'erp' ),
