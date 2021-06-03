@@ -2060,11 +2060,14 @@ class Ajax_Handler {
         global $wpdb;
         $table = $wpdb->prefix . 'erp_hr_leave_requests';
         $user_id = isset( $_POST['employee_id'] ) ? intval( $_POST['employee_id'] ) : 0;
-        $results = $wpdb->get_results("SELECT COUNT(days) AS total_taken_year FROM {$table} WHERE user_id ={$user_id} AND last_status = '1'");
+        $results = $wpdb->get_results("SELECT SUM(days) AS total_taken_year FROM {$table} WHERE user_id ={$user_id} AND last_status = '1'");
 
         $return = [];
+        $return['value'] = '0.0';
         foreach( $results as $result ) {
-            $return['value'] = $result->total_taken_year;
+            if( $result->total_taken_year !== null) {
+                $return['value'] = $result->total_taken_year;
+            }
         }
         $this->send_success( $return );
     }
