@@ -676,6 +676,15 @@
                         _wpnonce: wpErpHr.nonce
                     },
                     success: function(response) {
+                        wp.ajax.send( 'erp-hr-emp-leave-total-taken-days-of-year', {
+                            data: {
+                                employee_id: $('#erp-hr-leave-req-employee-id').val(),
+                                _wpnonce: wpErpHr.nonce
+                            },
+                            success: function(response) {
+                                $('#taken_year').val( response.value );
+                            }
+                        });
                         if(response && response.work) {
                             wp.ajax.send( 'erp-hr-get-desig', {
                                 data: {

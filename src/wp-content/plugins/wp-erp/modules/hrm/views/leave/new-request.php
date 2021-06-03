@@ -116,6 +116,7 @@
                             'type'        => 'number',
                             'required'    => true,
                             'disabled'    => true,
+                            'readonly'    => true
                         ] ); ?>
                     </div>                    
                     <div class="cols">

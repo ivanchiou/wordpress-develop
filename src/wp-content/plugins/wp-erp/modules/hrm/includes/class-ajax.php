@@ -51,6 +51,7 @@ class Ajax_Handler {
         $this->action( 'wp_ajax_erp-hr-emp-update-comp', 'employee_update_compensation' );
         $this->action( 'wp_ajax_erp-hr-emp-delete-history', 'employee_remove_history' );
         $this->action( 'wp_ajax_erp-hr-emp-update-jobinfo', 'employee_update_job_info' );
+        $this->action( 'wp_ajax_erp-hr-emp-leave-total-taken-days-of-year', 'get_employee_total_taken_days_of_year');
         $this->action( 'wp_ajax_erp-hr-empl-leave-history', 'get_employee_leave_history' );
         $this->action( 'wp_ajax_erp-hr-employee-new-note', 'employee_add_note' );
         $this->action( 'wp_ajax_erp-load-more-notes', 'employee_load_note' );
@@ -2053,6 +2054,19 @@ class Ajax_Handler {
         if( $redirect ) {
             exit();
         }
+    }
+
+    public function get_employee_total_taken_days_of_year()  {
+        global $wpdb;
+        $table = $wpdb->prefix . 'erp_hr_leave_requests';
+        $user_id = isset( $_POST['employee_id'] ) ? intval( $_POST['employee_id'] ) : 0;
+        $results = $wpdb->get_results("SELECT COUNT(days) AS total_taken_year FROM {$table} WHERE user_id ={$user_id} AND last_status = '1'");
+
+        $return = [];
+        foreach( $results as $result ) {
+            $return['value'] = $result->total_taken_year;
+        }
+        $this->send_success( $return );
     }
 
     /**
